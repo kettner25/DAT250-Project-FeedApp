@@ -1,20 +1,39 @@
 plugins {
-	java
-	id("org.springframework.boot") version "3.5.6"
-	id("io.spring.dependency-management") version "1.1.7"
+    id("com.github.node-gradle.node") version "7.0.2"
 }
 
-repositories {
-	mavenCentral()
+node {
+    download.set(true)
+    version.set("20.14.0")
+    npmVersion.set("10.7.0")
 }
 
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+tasks.named("npmInstall") {
+    inputs.files("package.json", "package-lock.json")
+    outputs.dir("node_modules")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+val buildFrontend = tasks.register<com.github.gradle.node.npm.task.NpmTask>("buildFrontend") {
+    dependsOn(tasks.named("npmInstall"))
+    npmCommand.set(listOf("run", "build"))
+    inputs.files("package.json", "package-lock.json", "index.html", fileTree("src"))
+    outputs.dir("dist")
+    group = "build"
+    description = "Builds the Vite frontend"
 }
 
+tasks.register("npmBuild") {
+    dependsOn(buildFrontend)
+}
+
+tasks.register("npmClean") {
+    doLast {
+        delete("node_modules", "dist")
+    }
+}
+
+tasks.register<Copy>("webCopyFrontend") {
+    dependsOn(buildFrontend)
+    from(layout.projectDirectory.dir("dist"))
+    into(rootProject.layout.projectDirectory.dir("backend/src/main/resources/static"))
+}

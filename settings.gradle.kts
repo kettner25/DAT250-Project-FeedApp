@@ -1,4 +1,10 @@
 rootProject.name = "FeedApp"
 
-include(":frontend", ":backend")
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
+include(":frontend", ":backend")

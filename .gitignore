@@ -36,7 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-
 # Logs
 logs
 *.log
@@ -46,6 +45,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node
 node_modules/
 dist
 dist-ssr
