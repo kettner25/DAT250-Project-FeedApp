@@ -36,3 +36,7 @@ tasks.named("bootJar") {
 tasks.named("build") {
     dependsOn(":frontend:webCopyFrontend")
 }
+
+tasks.named<ProcessResources>("processResources") {
+    dependsOn(":frontend:webCopyFrontend")
+}
