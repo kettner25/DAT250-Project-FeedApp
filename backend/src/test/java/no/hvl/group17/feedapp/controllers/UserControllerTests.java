@@ -73,6 +73,12 @@ class UserControllerTests {
     }
 
     @Test
+    void getAllUsers_asAnonymous_forbidden() throws Exception {
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "1", roles = "USER")
     void getUser_asSelf_returnsOwnData() throws Exception {
         mockMvc.perform(get("/users/1"))
@@ -83,6 +89,12 @@ class UserControllerTests {
     @Test
     @WithMockUser(username = "1", roles = "USER")
     void getUser_asOtherUser_forbidden() throws Exception {
+        mockMvc.perform(get("/users/2"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUser_asAnonymous_forbidden() throws Exception {
         mockMvc.perform(get("/users/2"))
                 .andExpect(status().isForbidden());
     }
@@ -116,6 +128,14 @@ class UserControllerTests {
     }
 
     @Test
+    void editUser_asAnonymous_forbidden() throws Exception {
+        mockMvc.perform(put("/users/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\": \"alice@centrum.cz\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(roles = "ADMIN")
     void editUser_asAdmin_returnsNewData() throws Exception {
         mockMvc.perform(put("/users/2")
@@ -137,6 +157,12 @@ class UserControllerTests {
     @WithMockUser(username = "1", roles = "USER")
     void deleteUser_asOtherUser_forbidden() throws Exception {
         mockMvc.perform(delete("/users/3"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteUser_asAnonymous_forbidden() throws Exception {
+        mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isForbidden());
     }
 
