@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -25,16 +26,45 @@ public class UserService {
      * @param id id of user
      * @return User or null
      * */
-    public User getUserById(int id) {
+    public User getUser(int id) {
         return userRepo.findById(id).orElse(null);
+    }
+
+    /**
+     * Get user by username
+     * @param username Username of user
+     * @return User or null
+     * */
+    public User getUser(String username) {
+        return userRepo.findByUsername(username).orElse(null);
+    }
+
+    /**
+     * Get user by email
+     * @param email email of user
+     * @return User or null
+     * */
+    public User getUserByEmail(String email) {
+        return userRepo.findByEmail(email).orElse(null);
+    }
+
+    /**
+     * Check if User params are unique for adding it to db
+     * @param user User
+     * @return Is unique?
+     * */
+    public Boolean isUnique(User user) {
+        return userRepo.checkIfUnique(user.getUsername(), user.getEmail());
     }
 
     /**
      * Create new user and store into DB
      * @param user New user to create
-     * @return created User
+     * @return created User or null if not created
      * */
     public User createUser(User user) {
+        if (!isUnique(user)) return null;
+
         return userRepo.save(user);
     }
 
@@ -44,9 +74,13 @@ public class UserService {
      * @return Edited user or null
      * */
     public User editUser(User user) {
-        var dbUser = getUserById(user.getId());
+        var dbUser = getUser(user.getId());
 
         if (dbUser == null) return null;
+
+        //Email needs to be unique
+        var emailUser = getUserByEmail(user.getEmail());
+        if (emailUser != null && !Objects.equals(emailUser.getId(), user.getId())) return null;
 
         dbUser.setEmail(user.getEmail());
 
@@ -55,11 +89,11 @@ public class UserService {
 
     /**
      * Delete user by id, if user does not exist return false
-     * @param id Id of user to be deleted
+     * @param id ID of user to be deleted
      * @return Proceeded correctly?
      * */
     public Boolean deleteUserById(int id) {
-        if (getUserById(id) != null) return false;
+        if (getUser(id) != null) return false;
 
         userRepo.deleteById(id);
 
