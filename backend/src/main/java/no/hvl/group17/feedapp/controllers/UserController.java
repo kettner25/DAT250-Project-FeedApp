@@ -32,7 +32,7 @@ public class UserController {
     /// For now ... but maybe it will be only for ADMIN depending on keycloak
     @PostMapping("/")
     public User createUser(@RequestBody User user) {
-        if (user.Verify()) return null;
+        if (!user.Verify()) return null;
 
         return userService.createUser(user);
     }
@@ -41,7 +41,7 @@ public class UserController {
     /// ADMIN and USER.id = uid
     @PutMapping("/{uid}")
     public User editUser(@PathVariable int uid, @RequestBody User user) {
-        if (user.Verify()) return null;
+        if (!user.Verify()) return null;
 
         if (uid != user.getId()) return null;
 
