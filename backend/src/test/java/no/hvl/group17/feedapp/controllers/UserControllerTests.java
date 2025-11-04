@@ -51,7 +51,7 @@ class UserControllerTests {
         userRepository.save(User.builder()
                 .id(4)
                 .keycloakId("4")
-                .username("delete")
+                .username("delete1")
                 .email("delete@mail.com")
                 .build());
     }
