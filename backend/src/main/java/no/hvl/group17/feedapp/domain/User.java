@@ -29,8 +29,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Poll> polls = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 }

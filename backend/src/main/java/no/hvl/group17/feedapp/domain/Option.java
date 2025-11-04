@@ -28,6 +28,8 @@ public class Option {
 
     @ManyToOne
     private Poll poll;
+
+    @Builder.Default
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 }

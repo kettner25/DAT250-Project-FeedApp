@@ -28,6 +28,7 @@ public class Poll {
     private Instant publishedAt;
     private Instant validUntil;
 
+    @Builder.Default
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
     @ManyToOne
