@@ -41,10 +41,12 @@ public class UserService {
     /**
      * Edit user info
      * @param user User to be edited
-     * @return Edited user
+     * @return Edited user or null
      * */
     public User editUser(User user) {
         var dbUser = getUserById(user.getId());
+
+        if (dbUser == null) return null;
 
         dbUser.setEmail(user.getEmail());
 

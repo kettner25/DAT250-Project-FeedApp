@@ -116,6 +116,24 @@ public class UserServiceTests {
     }
 
     @Test
+    void updateNewUser_returnsNull() {
+        var user = User.builder()
+                .id(5)
+                .keycloakId("5")
+                .username("alice-kernel")
+                .email("alice.kernel@emal.com")
+                .build();
+
+        var edited = userService.editUser(user);
+
+        assertThat(edited).isEqualTo(null);
+
+        //Check that not addded
+        var users = userService.getAllUsers();
+        assertThat(users).hasSize(4);
+    }
+
+    @Test
     void deleteUserById_returnsTrue() {
         var True = userService.deleteUserById(4);
 
