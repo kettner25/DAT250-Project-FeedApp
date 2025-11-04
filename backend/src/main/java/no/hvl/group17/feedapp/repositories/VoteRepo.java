@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface VoteRepo extends JpaRepository<Vote, Integer> {
 
-    @Query("SELECT o.id, COUNT(v) FROM Vote v JOIN v.option o JOIN o.poll p where p.id = :pid GROUP BY o.id")
+    @Query("SELECT o.id, COUNT(v) FROM Option o LEFT JOIN o.votes v WHERE o.poll.id = :pid GROUP BY o.id")
     List<Object[]> getVoteCountByPoll(@Param("pid") int id);
 }
