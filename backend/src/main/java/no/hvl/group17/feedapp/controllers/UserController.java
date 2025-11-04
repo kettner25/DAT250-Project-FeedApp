@@ -16,29 +16,42 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /// ADMIN only
     @GetMapping("/")
     public List<User> getAll() {
-        throw new RuntimeException("Not Implemented");
+        return userService.getAllUsers();
     }
 
+    /// ADMIN and USER.id = uid
     @GetMapping("/{uid}")
     public User getUser(@PathVariable int uid) {
-        throw new RuntimeException("Not Implemented");
+        return userService.getUser(uid);
     }
 
+    /// Public
+    /// For now ... but maybe it will be only for ADMIN depending on keycloak
     @PostMapping("/")
     public User createUser(@RequestBody User user) {
-        throw new RuntimeException("Not Implemented");
+        if (user.Verify()) return null;
+
+        return userService.createUser(user);
     }
 
+
+    /// ADMIN and USER.id = uid
     @PutMapping("/{uid}")
     public User editUser(@PathVariable int uid, @RequestBody User user) {
-        throw new RuntimeException("Not Implemented");
+        if (user.Verify()) return null;
+
+        if (uid != user.getId()) return null;
+
+        return userService.editUser(user);
     }
 
+    /// ADMIN and USER.id = uid
     @DeleteMapping("/{uid}")
-    public Boolean deleteUser() {
-        throw new RuntimeException("Not Implemented");
+    public Boolean deleteUser(@PathVariable int uid) {
+        return userService.deleteUserById(uid);
     }
 
     //---------------------------------------------------
