@@ -32,5 +32,14 @@ public class Poll {
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
+
+    public Boolean Verify() {
+        if (question == null || question.isEmpty()) return false;
+
+        if (options == null || options.isEmpty() || options.size() < 2) return false;
+
+        return user != null;
+    }
 }

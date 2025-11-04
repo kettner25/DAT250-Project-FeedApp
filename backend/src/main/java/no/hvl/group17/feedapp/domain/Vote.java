@@ -25,7 +25,14 @@ public class Vote {
     private Instant publishedAt;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Option option;
     @ManyToOne
     private User user;
+
+    public Boolean Verify() {
+        if ((anonId == null || anonId.isEmpty()) && user == null) return false;
+
+        return option != null;
+    }
 }

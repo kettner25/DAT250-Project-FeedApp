@@ -35,4 +35,12 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+
+    public Boolean Verify() {
+        if (keycloakId == null || keycloakId.isEmpty()) return false;
+
+        if (username == null || username.isEmpty()) return false;
+
+        return email != null && !email.isEmpty();
+    }
 }

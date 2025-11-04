@@ -23,13 +23,20 @@ public class Option {
 
     @Column(nullable = false)
     private String caption;
-    @Column(name = "porder", nullable = false)
+    @Column(name = "porder")
     private Integer order;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Poll poll;
 
     @Builder.Default
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+
+    public Boolean Verify() {
+        if (caption == null || caption.isEmpty()) return false;
+
+        return order >= 0;
+    }
 }
