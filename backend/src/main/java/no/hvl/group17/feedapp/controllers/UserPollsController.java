@@ -17,28 +17,41 @@ public class UserPollsController {
     @Autowired
     private PollService pollService;
 
+    /// ADMIN or USER.id = uid
     @GetMapping("/")
     public List<Poll> getAll(@PathVariable int uid) {
-        throw new RuntimeException("Not Implemented");
+        return pollService.getAllPollsByUser(uid);
     }
 
+    /// ADMIN or USER.id = uid
     @GetMapping("/{pid}")
     public Poll getPoll(@PathVariable int uid, @PathVariable int pid) {
-        throw new RuntimeException("Not Implemented");
+        return pollService.getPollByIdByUser(uid, pid);
     }
 
+    /// ADMIN or USER.id = uid
     @PostMapping("/")
     public Poll createPoll(@PathVariable int uid, @RequestBody Poll poll) {
-        throw new RuntimeException("Not Implemented");
+        if (!poll.Verify()) return null;
+
+        return pollService.createPoll(poll);
     }
 
+    /// ADMIN or USER.id = uid
     @PutMapping("/{pid}")
     public Poll editPoll(@PathVariable int uid, @PathVariable int pid, @RequestBody Poll poll) {
-        throw new RuntimeException("Not Implemented");
+        if (!poll.Verify()) return null;
+
+        if (poll.getId() != pid) return null;
+
+        return pollService.editPoll(poll);
     }
 
+    /// ADMIN or USER.id = uid
     @DeleteMapping("/{pid}")
     public Boolean deletePoll(@PathVariable int uid, @PathVariable int pid) {
-        throw new RuntimeException("Not Implemented");
+        if (pollService.getPollByIdByUser(uid, pid) == null) return false;
+
+        return pollService.deletePollById(pid);
     }
 }
