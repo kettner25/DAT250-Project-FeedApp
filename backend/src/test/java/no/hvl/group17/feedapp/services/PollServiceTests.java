@@ -109,6 +109,21 @@ public class PollServiceTests {
     }
 
     @Test
+    void getOptionById_returnsOption() {
+        var poll = pollService.getOptionById(1);
+
+        assertThat(poll.getId()).isEqualTo(1);
+        assertThat(poll.getCaption()).isEqualTo("Pancakes");
+    }
+
+    @Test
+    void getOptionById_returnsNull() {
+        var poll = pollService.getPollById(10);
+
+        assertThat(poll).isNull();
+    }
+
+    @Test
     void getAllPollsByUser_returnsPolls() {
         var polls = pollService.getAllPollsByUser(1);
 

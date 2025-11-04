@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.services;
 
+import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.repositories.PollRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,15 @@ public class PollService {
      * */
     public Poll getPollById(int id) {
         return pollRepo.findById(id).orElse(null);
+    }
+
+    /**
+     * Get option by id
+     * @param id ID
+     * @return Option or null
+     * */
+    public Option getOptionById(int id) {
+        return pollRepo.getOptionById(id).orElse(null);
     }
 
     /**
