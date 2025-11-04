@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -91,5 +92,29 @@ public class VoteRepoTests {
     void getListOfVotesCountByPollID_returnsEmpty() {
         var list = voteRepository.getVoteCountByPoll(2);
         assertThat(list).isEmpty();
+    }
+
+    @Test
+    void existsVoteByAnonID_ReturnTrue() {
+        var True = voteRepository.existsVoteByAnonID("10203040506", 2);
+        assertThat(True).isTrue();
+    }
+
+    @Test
+    void existsVoteByAnonID_ReturnFalse() {
+        var False = voteRepository.existsVoteByAnonID("_10203040506", 2);
+        assertThat(False).isFalse();
+    }
+
+    @Test
+    void existsVoteByUserID_ReturnTrue() {
+        var True = voteRepository.existsVoteByUserID(1, 2);
+        assertThat(True).isTrue();
+    }
+
+    @Test
+    void existsVoteByUserID_ReturnFalse() {
+        var False = voteRepository.existsVoteByUserID(1, 2);
+        assertThat(False).isFalse();
     }
 }
