@@ -15,13 +15,17 @@ public class PollVotesController {
     @Autowired
     private VoteService voteService;
 
+    /// Public
     @PostMapping("/")
     public Boolean vote(@PathVariable int pid, @RequestBody Vote vote) {
-        throw new RuntimeException("Not Implemented");
+        if (!vote.Verify()) return false;
+
+        return voteService.createVote(vote);
     }
 
+    /// Public
     @DeleteMapping("/{vid}")
     public Boolean delete(@PathVariable int vid) {
-        throw new RuntimeException("Not Implemented");
+        return voteService.deleteVote(vid);
     }
 }
