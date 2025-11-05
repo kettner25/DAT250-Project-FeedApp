@@ -4,8 +4,8 @@
 Table users {
 id integer [pk]
 username varchar [not null, unique]
-email varchar
-created_at timestamp [not null]
+email varchar [not null, unique]
+keycloak_id varchar [not null, unique]
 }
 
 Table polls {
@@ -13,12 +13,12 @@ id integer [pk]
 question varchar [not null]
 valid_until timestamp
 user_id integer [ref: > users.id]
-created_at timestamp [not null]
+published_at timestamp [not null]
 }
 
 Table options {
 id integer [pk]
-order integer
+porder integer
 caption varchar [not null]
 poll_id integer [ref: > polls.id, null]
 }
@@ -26,7 +26,7 @@ poll_id integer [ref: > polls.id, null]
 Table votes {
 id integer [pk]
 published_at timestamp [not null]
-id_anonym varchar [null]
+id_anonym varchar [null, unique]
 user_id  integer [ref: > users.id, null]
 option_id integer [ref: > options.id, null]
 }
