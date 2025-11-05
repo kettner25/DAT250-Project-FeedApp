@@ -44,7 +44,7 @@ public class VoteService {
         List<OptionCount> res = new ArrayList<>();
         for (Object[] item : list) {
             poll.getOptions().stream().filter(option -> option.getId() == (int) item[0]).findFirst().ifPresent(option -> {
-                res.add(new OptionCount(option, (int) item[1]));
+                res.add(new OptionCount(option, (int)(long)item[1]));
             });
         }
 

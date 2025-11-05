@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.services;
 
+import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -20,6 +22,8 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 public class VoteServiceTests {
     @Autowired
     private UserRepo userRepository;
@@ -36,39 +40,37 @@ public class VoteServiceTests {
     @BeforeEach
     void setup() {
         userRepository.save(User.builder()
-                .id(1)
                 .keycloakId("1")
                 .username("alice")
                 .email("alice@mail.com")
                 .build());
         userRepository.save(User.builder()
-                .id(2)
                 .keycloakId("2")
                 .username("bob")
                 .email("bob@mail.com")
                 .build());
 
-        pollRepository.save(Poll.builder()
-                .id(1)
+        var poll = Poll.builder()
                 .question("Favorite food?")
                 .options(
-                        Arrays.asList(Option.builder().id(1).caption("Pancakes").build(),
-                                Option.builder().id(2).caption("Pizza").build(),
-                                Option.builder().id(3).caption("Dumplings").build())
+                        Arrays.asList(Option.builder().caption("Pancakes").build(),
+                                Option.builder().caption("Pizza").build(),
+                                Option.builder().caption("Dumplings").build())
                 )
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
-                .build());
+                .build();
+
+        poll.linkOptions();
+        pollRepository.save(poll);
 
         voteRepository.save(Vote.builder()
-                .id(1)
                 .option(pollRepository.findAll().getFirst().getOptions().get(1))
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
                 .build());
 
         voteRepository.save(Vote.builder()
-                .id(2)
                 .option(pollRepository.findAll().getFirst().getOptions().get(1))
                 .anonId("10203040506")
                 .publishedAt(Instant.now())
@@ -77,40 +79,40 @@ public class VoteServiceTests {
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
-        pollRepository.deleteAll();
         voteRepository.deleteAll();
+        pollRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     void getVoteById_returnsVote() {
-        Vote vote = voteService.getVoteById(1);
+        Vote vote = voteService.getVoteById(voteRepository.findAll().getFirst().getId());
 
-        assertThat(vote.getId()).isEqualTo(1);
-        assertThat(vote.getUser().getId()).isEqualTo(1);
-        assertThat(vote.getOption().getId()).isEqualTo(2);
+        assertThat(vote.getId()).isEqualTo(voteRepository.findAll().getFirst().getId());
+        assertThat(vote.getUser().getId()).isEqualTo(userRepository.findAll().getFirst().getId());
+        assertThat(vote.getOption().getId()).isEqualTo(pollRepository.findAll().getFirst().getOptions().get(1).getId());
     }
 
     @Test
     void getVoteById_returnsNull() {
-        Vote vote = voteService.getVoteById(5);
+        Vote vote = voteService.getVoteById(-1);
 
         assertThat(vote).isNull();
     }
 
     @Test
     void getVoteCountByPollID_returnsVoteCounts() {
-        var list = voteService.getVoteCountsByPoll(1);
+        var list = voteService.getVoteCountsByPoll(pollRepository.findAll().getFirst().getId());
 
         assertThat(list).hasSize(3);
-        assertThat(list).extracting(OptionCount::getOption).extracting(Option::getId).containsExactly(1, 2, 3);
+        assertThat(list).extracting(OptionCount::getOption).extracting(Option::getCaption).containsExactly("Pancakes", "Pizza", "Dumplings");
         assertThat(list).extracting(OptionCount::getCount).containsExactly(0, 2, 0);
     }
 
     @Test
     void getVoteCountByPollID_returnsNull() {
-        var list = voteService.getVoteCountsByPoll(5);
-        assertThat(list).isNull();
+        var list = voteService.getVoteCountsByPoll(-1);
+        assertThat(list).isEmpty();
     }
 
     @Test
@@ -156,16 +158,20 @@ public class VoteServiceTests {
 
     @Test
     void deleteVoteById_returnsTrue() {
-        var True = voteService.deleteVote(1);
+        var a = voteRepository.findAll();
+        var True = voteService.deleteVote(voteRepository.findAll().getFirst().getId());
 
+        voteRepository.flush();
         assertThat(True).isTrue();
+        a = voteRepository.findAll();
         assertThat(voteRepository.findAll().size()).isEqualTo(1);
-        assertThat(voteRepository.existsVoteByUserID(1, 2)).isEqualTo(false);
+        assertThat(voteRepository.existsVoteByUserID(userRepository.findAll().getFirst().getId(),
+                pollRepository.findAll().getFirst().getOptions().get(1).getId())).isEqualTo(false);
     }
 
     @Test
     void deleteVoteById_returnsFalse() {
-        var False = voteService.deleteVote(5);
+        var False = voteService.deleteVote(-1);
 
         assertThat(False).isFalse();
         assertThat(voteRepository.findAll().size()).isEqualTo(2);
