@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.services;
 
+import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public class PollServiceTests {
     @Autowired
     private UserRepo userRepository;

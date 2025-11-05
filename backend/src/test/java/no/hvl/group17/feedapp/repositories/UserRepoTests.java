@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.repositories;
 
+import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.services.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public class UserRepoTests {
 
     @Autowired
