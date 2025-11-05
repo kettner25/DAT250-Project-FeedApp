@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class PollServiceTests {
     @Autowired
     private UserRepo userRepository;
@@ -30,58 +32,58 @@ public class PollServiceTests {
     @BeforeEach
     void setup() {
         userRepository.save(User.builder()
-                .id(1)
                 .keycloakId("1")
                 .username("alice")
                 .email("alice@mail.com")
                 .build());
         userRepository.save(User.builder()
-                .id(2)
                 .keycloakId("2")
                 .username("bob")
                 .email("bob@mail.com")
                 .build());
 
-        pollRepository.save(Poll.builder()
-                .id(1)
+        var poll = Poll.builder()
                 .question("Favorite food?")
                 .options(
-                        Arrays.asList(Option.builder().id(1).caption("Pancakes").build(),
-                                Option.builder().id(2).caption("Pizza").build(),
-                                Option.builder().id(3).caption("Dumplings").build())
+                        Arrays.asList(Option.builder().caption("Pancakes").build(),
+                                Option.builder().caption("Pizza").build(),
+                                Option.builder().caption("Dumplings").build())
                 )
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
-                .build()
-        );
-        pollRepository.save(Poll.builder()
-                .id(2)
+                .build();
+        poll.linkOptions();
+        pollRepository.save(poll);
+
+        poll = Poll.builder()
                 .question("Delete?")
                 .options(
-                        Arrays.asList(Option.builder().id(4).caption("Jep").build(),
-                                Option.builder().id(5).caption("Nope").build())
+                        Arrays.asList(Option.builder().caption("Jep").build(),
+                                Option.builder().caption("Nope").build())
                 )
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
-                .build()
-        );
-        pollRepository.save(Poll.builder()
-                .id(3)
+                .build();
+        poll.linkOptions();
+        pollRepository.save(poll);
+
+        poll = Poll.builder()
                 .question("Delete?")
                 .options(
-                        Arrays.asList(Option.builder().id(6).caption("Jep").build(),
-                                Option.builder().id(7).caption("Nope").build())
+                        Arrays.asList(Option.builder().caption("Jep").build(),
+                                Option.builder().caption("Nope").build())
                 )
                 .user(userRepository.findAll().getLast())
                 .publishedAt(Instant.now())
-                .build()
-        );
+                .build();
+        poll.linkOptions();
+        pollRepository.save(poll);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
         pollRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -89,90 +91,89 @@ public class PollServiceTests {
         var polls = pollService.getAllPolls();
 
         assertThat(polls).hasSize(3);
-        assertThat(polls).extracting(Poll::getId).isEqualTo(Arrays.asList(1, 2, 3));
         assertThat(polls).extracting(Poll::getQuestion).isEqualTo(Arrays.asList("Favorite food?", "Delete?", "Delete?"));
-        assertThat(polls).extracting(Poll::getUser).extracting(User::getId).isEqualTo(Arrays.asList(1, 1, 2));
+        assertThat(polls).extracting(Poll::getUser).extracting(User::getUsername).isEqualTo(Arrays.asList("alice", "alice", "bob"));
     }
 
     @Test
     void getPollById_returnsPoll() {
-        var poll = pollService.getPollById(1);
+        var poll = pollService.getPollById(pollRepository.findAll().getFirst().getId());
 
-        assertThat(poll.getId()).isEqualTo(1);
+        assertThat(poll.getId()).isEqualTo(pollRepository.findAll().getFirst().getId());
         assertThat(poll.getQuestion()).isEqualTo("Favorite food?");
     }
 
     @Test
     void getPollById_returnsNull() {
-        var poll = pollService.getPollById(10);
+        var poll = pollService.getPollById(-1);
         assertThat(poll).isNull();
     }
 
     @Test
     void getOptionById_returnsOption() {
-        var poll = pollService.getOptionById(1);
+        var option = pollService.getOptionById(pollRepository.findAll().getFirst().getOptions().get(0).getId());
 
-        assertThat(poll.getId()).isEqualTo(1);
-        assertThat(poll.getCaption()).isEqualTo("Pancakes");
+        assertThat(option.getId()).isEqualTo(pollRepository.findAll().getFirst().getOptions().get(0).getId());
+        assertThat(option.getCaption()).isEqualTo("Pancakes");
     }
 
     @Test
     void getOptionById_returnsNull() {
-        var poll = pollService.getPollById(10);
+        var option = pollService.getOptionById(-1);
 
-        assertThat(poll).isNull();
+        assertThat(option).isNull();
     }
 
     @Test
     void getAllPollsByUser_returnsPolls() {
-        var polls = pollService.getAllPollsByUser(1);
+        var polls = pollService.getAllPollsByUser(userRepository.findAll().getFirst().getId());
 
         assertThat(polls).hasSize(2);
-        assertThat(polls).extracting(Poll::getId).isEqualTo(Arrays.asList(1, 2));
         assertThat(polls).extracting(Poll::getQuestion).isEqualTo(Arrays.asList("Favorite food?", "Delete?"));
     }
 
     @Test
     void getAllPollsByUser_returnsEmpty() {
-        var polls = pollService.getAllPollsByUser(3);
+        var polls = pollService.getAllPollsByUser(-1);
         assertThat(polls).isEmpty();
     }
 
     @Test
     void getPollByUser_returnsPoll() {
-        var poll = pollService.getPollByIdByUser(2, 3);
+        var poll = pollService.getPollByIdByUser(userRepository.findAll().getLast().getId(), pollRepository.findAll().getLast().getId());
 
-        assertThat(poll.getId()).isEqualTo(3);
+        assertThat(poll.getId()).isEqualTo(pollRepository.findAll().getLast().getId());
         assertThat(poll.getQuestion()).isEqualTo("Delete?");
     }
 
     @Test
     void createPoll_returnsPoll() {
-        var poll = pollService.createPoll(Poll.builder()
-                        .id(4)
-                        .user(userRepository.findAll().getFirst())
-                        .publishedAt(Instant.now())
-                        .question("Favorite food 2?")
-                        .options(Arrays.asList(Option.builder().id(6).caption("Jep").build(),
-                                Option.builder().id(7).caption("Nope").build()))
-                .build());
+        var poll = Poll.builder()
+                .user(userRepository.findAll().getFirst())
+                .publishedAt(Instant.now())
+                .question("Favorite food 2?")
+                .options(Arrays.asList(Option.builder().caption("Jep").build(),
+                        Option.builder().caption("Nope").build()))
+                .build();
+        poll.linkOptions();
+        var poll1 = pollService.createPoll(poll);
 
-        assertThat(poll.getId()).isEqualTo(4);
-        assertThat(poll.getQuestion()).isEqualTo("Favorite food 2?");
-        assertThat(poll.getOptions().size()).isEqualTo(2);
+        assertThat(poll1.getId()).isEqualTo(pollRepository.findAll().getLast().getId());
+        assertThat(poll1.getQuestion()).isEqualTo("Favorite food 2?");
+        assertThat(poll1.getOptions().size()).isEqualTo(2);
 
         assertThat(pollService.getAllPolls().size()).isEqualTo(4);
     }
 
     @Test
     void editPoll_returnsPoll() {
-        var poll = pollService.getPollById(1);
+        var poll = pollService.getPollById(pollRepository.findAll().getFirst().getId());
 
         var date = Instant.now();
         poll.setValidUntil(date);
 
         var poll1 = pollService.editPoll(poll);
-        assertThat(poll1.getId()).isEqualTo(1);
+        assertThat(poll1.getId()).isEqualTo(pollRepository.findAll().getFirst().getId());
         assertThat(poll1.getValidUntil()).isEqualTo(date);
 
         assertThat(pollService.getAllPolls().size()).isEqualTo(3);
@@ -180,10 +181,13 @@ public class PollServiceTests {
 
     @Test
     void editPoll_returnsNull() {
-        var poll = pollService.getPollById(4);
-
-        var date = Instant.now();
-        poll.setValidUntil(date);
+        var poll = Poll.builder()
+                .user(userRepository.findAll().getFirst())
+                .publishedAt(Instant.now())
+                .question("Favorite food 2?")
+                .options(Arrays.asList(Option.builder().caption("Jep").build(),
+                        Option.builder().caption("Nope").build()))
+                .build();
 
         var poll1 = pollService.editPoll(poll);
         assertThat(poll1).isNull();
@@ -193,13 +197,13 @@ public class PollServiceTests {
 
     @Test
     void deletePollById_returnsTrue() {
-        var True = pollService.deletePollById(2);
+        var True = pollService.deletePollById(pollRepository.findAll().get(1).getId());
         assertThat(True).isTrue();
     }
 
     @Test
     void deletePollById_returnsFalse() {
-        var False = pollService.deletePollById(7);
+        var False = pollService.deletePollById(-1);
         assertThat(False).isFalse();
     }
 }

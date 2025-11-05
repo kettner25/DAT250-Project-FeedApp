@@ -85,6 +85,8 @@ public class PollService {
      * @return Edited poll or Null
      * */
     public Poll editPoll(Poll poll) {
+        if (poll.getId() == null) return null;
+
         var dbPoll = getPollById(poll.getId());
 
         if (dbPoll == null) return  null;
