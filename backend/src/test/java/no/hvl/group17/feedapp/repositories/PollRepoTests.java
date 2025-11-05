@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.repositories;
 
+import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -16,6 +19,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class PollRepoTests {
     @Autowired
     private UserRepo userRepository;
@@ -26,29 +30,29 @@ public class PollRepoTests {
     @BeforeEach
     void setup() {
         userRepository.save(User.builder()
-                .id(1)
                 .keycloakId("1")
                 .username("alice")
                 .email("alice@mail.com")
                 .build());
 
-        pollRepository.save(Poll.builder()
-                .id(1)
+        var poll = Poll.builder()
                 .question("Favorite food?")
                 .options(
-                        Arrays.asList(Option.builder().id(1).caption("Pancakes").build(),
-                                Option.builder().id(2).caption("Pizza").build(),
-                                Option.builder().id(3).caption("Dumplings").build())
+                        Arrays.asList(Option.builder().caption("Pancakes").build(),
+                                Option.builder().caption("Pizza").build(),
+                                Option.builder().caption("Dumplings").build())
                 )
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
-                .build());
+                .build();
+        poll.linkOptions();
+        pollRepository.save(poll);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
         pollRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test

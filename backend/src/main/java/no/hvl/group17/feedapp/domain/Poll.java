@@ -31,7 +31,7 @@ public class Poll {
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
     @ManyToOne
     @ToString.Exclude
