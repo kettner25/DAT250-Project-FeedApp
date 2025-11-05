@@ -1,10 +1,9 @@
 package no.hvl.group17.feedapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -25,9 +24,13 @@ public class Vote {
     private Instant publishedAt;
 
     @ManyToOne
+    @ToString.Exclude
+    @JsonManagedReference
     @JoinColumn(nullable = false)
     private Option option;
     @ManyToOne
+    @ToString.Exclude
+    @JsonBackReference
     private User user;
 
     public Boolean Verify() {

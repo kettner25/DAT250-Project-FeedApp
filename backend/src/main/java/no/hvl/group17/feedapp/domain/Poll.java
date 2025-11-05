@@ -1,11 +1,11 @@
 package no.hvl.group17.feedapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -29,9 +29,13 @@ public class Poll {
     private Instant validUntil;
 
     @Builder.Default
+    @ToString.Exclude
+    @JsonManagedReference
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
     @ManyToOne
+    @ToString.Exclude
+    @JsonBackReference
     @JoinColumn(nullable = false)
     private User user;
 
@@ -41,5 +45,10 @@ public class Poll {
         if (options == null || options.isEmpty() || options.size() < 2) return false;
 
         return user != null;
+    }
+
+    public void linkOptions() {
+        if (options != null)
+            options.forEach(o -> o.setPoll(this));
     }
 }

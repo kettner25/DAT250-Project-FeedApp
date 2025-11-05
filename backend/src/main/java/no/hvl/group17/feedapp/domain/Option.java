@@ -1,10 +1,9 @@
 package no.hvl.group17.feedapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +26,21 @@ public class Option {
     private Integer order;
 
     @ManyToOne
+    @JsonBackReference
+    @ToString.Exclude
     @JoinColumn(nullable = false)
     private Poll poll;
 
     @Builder.Default
+    @ToString.Exclude
+    @JsonBackReference
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 
     public Boolean Verify() {
         if (caption == null || caption.isEmpty()) return false;
+
+        if (poll == null) return false;
 
         return order == null || order >= 0;
     }
