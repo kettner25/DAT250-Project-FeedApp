@@ -74,6 +74,8 @@ public class UserService {
      * @return Edited user or null
      * */
     public User editUser(User user) {
+        if (user.getId() == null) return null;
+
         var dbUser = getUser(user.getId());
 
         if (dbUser == null) return null;
@@ -93,7 +95,7 @@ public class UserService {
      * @return Proceeded correctly?
      * */
     public Boolean deleteUserById(int id) {
-        if (getUser(id) != null) return false;
+        if (getUser(id) == null) return false;
 
         userRepo.deleteById(id);
 

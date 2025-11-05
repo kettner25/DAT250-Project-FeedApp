@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class UserServiceTests {
 
     @Autowired
@@ -25,28 +27,24 @@ public class UserServiceTests {
     void setup() {
         userRepository.deleteAll();
         userRepository.save(User.builder()
-                .id(1)
                 .keycloakId("1")
                 .username("alice")
                 .email("alice@mail.com")
                 .build());
         userRepository.save(User.builder()
-                .id(2)
                 .keycloakId("2")
                 .username("bob")
                 .email("bob@mail.com")
                 .build());
         userRepository.save(User.builder()
-                .id(3)
                 .keycloakId("3")
                 .username("delete")
                 .email("delete@mail.com")
                 .build());
         userRepository.save(User.builder()
-                .id(4)
                 .keycloakId("4")
                 .username("delete1")
-                .email("delete@mail.com")
+                .email("delete1@mail.com")
                 .build());
     }
 
@@ -56,36 +54,35 @@ public class UserServiceTests {
 
         // Assert
         assertThat(users).hasSize(4);
-        assertThat(users).extracting(User::getId).isEqualTo(Arrays.asList(1, 2, 3, 4));
         assertThat(users).extracting(User::getUsername).isEqualTo(Arrays.asList("alice", "bob", "delete", "delete1"));
     }
 
     @Test
     void getUserById_returnsUser() {
-        var user1 = userService.getUser(1);
-        assertThat(user1.getId()).isEqualTo(1);
+        var user1 = userService.getUser(userRepository.findAll().get(0).getId());
+        assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
 
-        var user2 = userService.getUser(2);
-        assertThat(user2.getId()).isEqualTo(2);
+        var user2 = userService.getUser(userRepository.findAll().get(1).getId());
+        assertThat(user2.getId()).isEqualTo(userRepository.findAll().get(1).getId());
         assertThat(user2.getUsername()).isEqualTo("bob");
     }
 
     @Test
     void getUserById_returnsNull() {
-        var user1 = userService.getUser(4);
+        var user1 = userService.getUser(-1);
         assertThat(user1).isNull();
     }
 
     @Test
     void getUserByUsername_returnsUser() {
         var user1 = userService.getUser("alice");
-        assertThat(user1.getId()).isEqualTo(1);
+        assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
 
         var user2 = userService.getUser("delete");
-        assertThat(user2.getId()).isEqualTo(2);
-        assertThat(user2.getUsername()).isEqualTo("bob");
+        assertThat(user2.getId()).isEqualTo(userRepository.findAll().get(2).getId());
+        assertThat(user2.getUsername()).isEqualTo("delete");
     }
 
     @Test
@@ -97,7 +94,7 @@ public class UserServiceTests {
     @Test
     void getUserByEmail_returnsUser() {
         var user1 = userService.getUserByEmail("alice@mail.com");
-        assertThat(user1.getId()).isEqualTo(1);
+        assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
         assertThat(user1.getEmail()).isEqualTo("alice@mail.com");
     }
@@ -111,7 +108,6 @@ public class UserServiceTests {
     @Test
     void isUnique_returnsTrue() {
         var user = User.builder()
-                .id(5)
                 .keycloakId("5")
                 .username("alice-kernel")
                 .email("alice.kernel@emal.com")
@@ -124,7 +120,6 @@ public class UserServiceTests {
     @Test
     void isUnique_returnsFalse() {
         var user = User.builder()
-                .id(5)
                 .keycloakId("5")
                 .username("alice")
                 .email("alice.kernel@emal.com")
@@ -143,14 +138,13 @@ public class UserServiceTests {
     @Test
     void createUser_returnsUser() {
         var user = User.builder()
-                .id(5)
                 .keycloakId("5")
                 .username("alice-kernel")
                 .email("alice.kernel@emal.com")
                 .build();
 
         var userCreated = userService.createUser(user);
-        assertThat(userCreated.getId()).isEqualTo(5);
+        assertThat(userCreated.getId()).isEqualTo(userRepository.findAll().getLast().getId());
         assertThat(userCreated.getUsername()).isEqualTo("alice-kernel");
         assertThat(userCreated).isEqualTo(user);
 
@@ -162,7 +156,6 @@ public class UserServiceTests {
     @Test
     void createUser_returnNull() {
         var user = User.builder()
-                .id(5)
                 .keycloakId("5")
                 .username("alice")
                 .email("alice.kernel@emal.com")
@@ -178,12 +171,12 @@ public class UserServiceTests {
 
     @Test
     void updateUser_returnsUser() {
-        var user = userService.getUser(1);
+        var user = userService.getUser(userRepository.findAll().get(0).getId());
 
         user.setEmail("Alice.ana@gmail.com");
         var edited = userService.editUser(user);
 
-        assertThat(edited.getId()).isEqualTo(1);
+        assertThat(edited.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(edited.getEmail()).isEqualTo(user.getEmail());
 
         //Check that not addded
@@ -193,7 +186,7 @@ public class UserServiceTests {
 
     @Test
     void updateUser_returnsNull() {
-        var user = userService.getUser(1);
+        var user = userService.getUser(userRepository.findAll().get(0).getId());
 
         user.setEmail("delete@mail.com");
         var edited = userService.editUser(user);
@@ -207,18 +200,17 @@ public class UserServiceTests {
 
     @Test
     void updateUser_noUpdates_returnsUser() {
-        var user = userService.getUser(1);
+        var user = userService.getUser(userRepository.findAll().get(0).getId());
 
         var edited = userService.editUser(user);
 
-        assertThat(edited.getId()).isEqualTo(1);
+        assertThat(edited.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(edited.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
     void updateNewUser_returnsNull() {
         var user = User.builder()
-                .id(5)
                 .keycloakId("5")
                 .username("alice-kernel")
                 .email("alice.kernel@emal.com")
@@ -235,18 +227,18 @@ public class UserServiceTests {
 
     @Test
     void deleteUserById_returnsTrue() {
-        var True = userService.deleteUserById(4);
+        var True = userService.deleteUserById(userRepository.findAll().getLast().getId());
 
         assertThat(True).isTrue();
 
         //Check that deleted
         var users = userService.getAllUsers();
         assertThat(users).hasSize(3);
-        assertThat(users).extracting(User::getId).isEqualTo(Arrays.asList(1, 2, 3));
+        assertThat(users).extracting(User::getUsername).isEqualTo(Arrays.asList("alice", "bob", "delete"));
 
         //--- Delete another one
 
-        True = userService.deleteUserById(3);
+        True = userService.deleteUserById(userRepository.findAll().getLast().getId());
         assertThat(True).isTrue();
 
         users = userService.getAllUsers();
