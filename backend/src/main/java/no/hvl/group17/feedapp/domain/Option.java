@@ -37,6 +37,6 @@ public class Option {
     public Boolean Verify() {
         if (caption == null || caption.isEmpty()) return false;
 
-        return order >= 0;
+        return order == null || order >= 0;
     }
 }
