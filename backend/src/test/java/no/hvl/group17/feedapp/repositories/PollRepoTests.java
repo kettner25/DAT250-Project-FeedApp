@@ -58,10 +58,10 @@ public class PollRepoTests {
 
     @Test
     void getOptionByID_returnsOption() {
-        var option = pollRepository.getOptionById(1).orElse(null);
+        var option = pollRepository.getOptionById(pollRepository.findAll().getFirst().getOptions().getFirst().getId()).orElse(null);
 
         assertThat(option).isNotNull();
-        assertThat(option.getId()).isEqualTo(1);
+        assertThat(option.getId()).isEqualTo(pollRepository.findAll().getFirst().getOptions().getFirst().getId());
         assertThat(option.getCaption()).isEqualTo("Pancakes");
     }
 

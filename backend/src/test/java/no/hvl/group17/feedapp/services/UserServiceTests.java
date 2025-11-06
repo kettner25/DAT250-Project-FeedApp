@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
 public class UserServiceTests {
 
     @Autowired
