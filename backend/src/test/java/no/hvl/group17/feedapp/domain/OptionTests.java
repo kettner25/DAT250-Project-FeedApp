@@ -9,7 +9,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OptionTests {
     @Test
     void optionOk_returnsTrue() {
-        var option = Option.builder().id(1).caption("Pancakes").build();
+        var poll = Poll.builder().build();
+
+        var option = Option.builder().id(1).caption("Pancakes").poll(poll).build();
 
         assertThat(option.Verify()).isTrue();
     }
