@@ -1,8 +1,6 @@
 package no.hvl.group17.feedapp.controllers;
 
-import jdk.jshell.spi.ExecutionControl;
 import no.hvl.group17.feedapp.domain.User;
-import no.hvl.group17.feedapp.repositories.UserRepo;
 import no.hvl.group17.feedapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserController {
 
     @Autowired
