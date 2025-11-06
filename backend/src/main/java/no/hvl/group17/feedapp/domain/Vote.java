@@ -1,7 +1,6 @@
 package no.hvl.group17.feedapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,12 +24,12 @@ public class Vote {
 
     @ManyToOne
     @ToString.Exclude
-    @JsonManagedReference
+    @JsonBackReference("option-votes")
     @JoinColumn(nullable = false)
     private Option option;
     @ManyToOne
     @ToString.Exclude
-    @JsonBackReference
+    @JsonBackReference("user-votes")
     private User user;
 
     public Boolean Verify() {

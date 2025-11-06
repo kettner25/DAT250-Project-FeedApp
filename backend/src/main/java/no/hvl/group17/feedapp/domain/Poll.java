@@ -2,7 +2,6 @@ package no.hvl.group17.feedapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -30,12 +29,12 @@ public class Poll {
 
     @Builder.Default
     @ToString.Exclude
-    @JsonManagedReference
+    @JsonManagedReference("poll-options")
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
     @ManyToOne
     @ToString.Exclude
-    @JsonBackReference
+    @JsonBackReference("user-polls")
     @JoinColumn(nullable = false)
     private User user;
 

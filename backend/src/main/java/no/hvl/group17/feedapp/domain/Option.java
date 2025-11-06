@@ -26,14 +26,14 @@ public class Option {
     private Integer order;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("poll-options")
     @ToString.Exclude
     @JoinColumn(nullable = false)
     private Poll poll;
 
     @Builder.Default
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference("option-votes")
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 

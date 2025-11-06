@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users/{uid}/polls")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserPollsController {
     @Autowired
     private UserService userService;
