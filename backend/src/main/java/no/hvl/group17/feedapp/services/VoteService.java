@@ -5,6 +5,9 @@ import no.hvl.group17.feedapp.models.OptionCount;
 import no.hvl.group17.feedapp.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate; // NEW
+import org.springframework.cache.annotation.Cacheable;   // NEW
+import org.springframework.cache.annotation.CacheEvict; // NEW
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,9 @@ public class VoteService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate; // NEW
+
     /**
      * Get vote by its ID
      * @param id  Vote ID
@@ -34,6 +40,7 @@ public class VoteService {
      * @param id Poll id
      * @return List of {Option, count}
      * */
+    @Cacheable(value = "voteCounts", key = "#id")
     public List<OptionCount> getVoteCountsByPoll(int id) {
         var poll = pollService.getPollById(id);
 
@@ -56,36 +63,54 @@ public class VoteService {
      * @param vote Vote
      * @return if proceeded correctly
      * */
+    @CacheEvict(value = "voteCounts", allEntries = true)
     public Boolean createVote(Vote vote) {
-        if (vote.getUser() != null) {
-            if (userService.getUser(vote.getUser().getId()) == null) return false;
-            vote.setAnonId(null);
 
-            if (voteRepo.existsVoteByUserID(vote.getUser().getId(), vote.getOption().getId())) return false;
-        }
-        else {
-            if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return false;
+    // validate user
+    if (vote.getUser() != null) {
+        if (userService.getUser(vote.getUser().getId()) == null) return false;
+        vote.setAnonId(null);
 
-            if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return false;
-        }
+        if (voteRepo.existsVoteByUserID(vote.getUser().getId(), vote.getOption().getId())) return false;
+    } else {
+        if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return false;
 
-        if (pollService.getOptionById(vote.getOption().getId()) == null) return false;
-
-        voteRepo.save(vote);
-
-        return true;
+        if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return false;
     }
+
+    // FIX: load option and poll from DB
+    var option = pollService.getOptionById(vote.getOption().getId());
+    if (option == null) return false;
+    var pollId = option.getPoll().getId();
+
+    voteRepo.save(vote);
+
+    // NEW: publish message to RabbitMQ
+    rabbitTemplate.convertAndSend("vote-events", pollId);
+
+    return true;
+}
+
 
     /**
      * Unvote on spec. option
      * @param id Vote id
      * @return if proceeded correctly
      * */
+    @CacheEvict(value = "voteCounts", key = "#pollId")
     public Boolean deleteVote(int id) {
-        if (getVoteById(id) == null) return false;
+        var vote = getVoteById(id);
+        if (vote == null) return false;
+
+        var pollId = vote.getOption().getPoll().getId();
 
         voteRepo.deleteById(id);
 
+        // NEW: Send message to RabbitMQ queue when deleting a vote
+        rabbitTemplate.convertAndSend("vote-events", "vote-deleted:" + id);
+        rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
+
         return true;
-    }
+}
+
 }
