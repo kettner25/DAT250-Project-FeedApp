@@ -5,9 +5,9 @@ import no.hvl.group17.feedapp.models.OptionCount;
 import no.hvl.group17.feedapp.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.amqp.rabbit.core.RabbitTemplate; // NEW
-import org.springframework.cache.annotation.Cacheable;   // NEW
-import org.springframework.cache.annotation.CacheEvict; // NEW
+import org.springframework.amqp.rabbit.core.RabbitTemplate; 
+import org.springframework.cache.annotation.Cacheable;                                                                                              
+import org.springframework.cache.annotation.CacheEvict;   
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class VoteService {
     private UserService userService;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate; // NEW
+    private RabbitTemplate rabbitTemplate; 
 
     /**
      * Get vote by its ID
@@ -78,14 +78,14 @@ public class VoteService {
         if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return false;
     }
 
-    // FIX: load option and poll from DB
+
     var option = pollService.getOptionById(vote.getOption().getId());
     if (option == null) return false;
     var pollId = option.getPoll().getId();
 
     voteRepo.save(vote);
 
-    // NEW: publish message to RabbitMQ
+
     rabbitTemplate.convertAndSend("vote-events", pollId);
 
     return true;

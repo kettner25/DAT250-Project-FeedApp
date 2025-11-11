@@ -16,3 +16,13 @@ services:
       - "5672:5672"   # AMQP
       - "15672:15672" # Web UI
     restart: always
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.2
+    container_name: feedapp-keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8081:8080"
