@@ -30,12 +30,12 @@ public class User {
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference("user-polls")
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Poll> polls = new ArrayList<>();
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference("user-votes")
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 
     public Boolean Verify() {

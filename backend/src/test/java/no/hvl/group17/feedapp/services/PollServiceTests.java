@@ -198,8 +198,11 @@ public class PollServiceTests {
 
     @Test
     void deletePollById_returnsTrue() {
-        var True = pollService.deletePollById(pollRepository.findAll().get(1).getId());
+        var id = pollRepository.findAll().get(1).getId();
+        var True = pollService.deletePollById(id);
         assertThat(True).isTrue();
+        pollRepository.flush();
+        assertThat(pollService.getPollById(id)).isNull();
     }
 
     @Test
