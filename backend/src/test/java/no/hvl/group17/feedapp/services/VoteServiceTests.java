@@ -39,6 +39,10 @@ public class VoteServiceTests {
 
     @BeforeEach
     void setup() {
+        voteRepository.deleteAll();
+        pollRepository.deleteAll();
+        userRepository.deleteAll();
+
         userRepository.save(User.builder()
                 .keycloakId("1")
                 .username("alice")
@@ -75,13 +79,6 @@ public class VoteServiceTests {
                 .anonId("10203040506")
                 .publishedAt(Instant.now())
                 .build());
-    }
-
-    @AfterEach
-    void tearDown() {
-        voteRepository.deleteAll();
-        pollRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
