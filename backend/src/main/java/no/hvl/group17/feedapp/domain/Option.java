@@ -1,7 +1,9 @@
 package no.hvl.group17.feedapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,9 @@ import java.util.List;
 @Entity
 @Table(name = "poll_options")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Option {
 
     @Id
@@ -17,11 +22,26 @@ public class Option {
 
     @Column(nullable = false)
     private String caption;
-    @Column(name = "porder", nullable = false)
+    @Column(name = "porder")
     private Integer order;
 
     @ManyToOne
+    @JsonBackReference("poll-options")
+    @ToString.Exclude
+    @JoinColumn(nullable = false)
     private Poll poll;
-    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @Builder.Default
+    @ToString.Exclude
+    @JsonManagedReference("option-votes")
+    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+
+    public Boolean Verify() {
+        if (caption == null || caption.isEmpty()) return false;
+
+        if (poll == null) return false;
+
+        return order == null || order >= 0;
+    }
 }

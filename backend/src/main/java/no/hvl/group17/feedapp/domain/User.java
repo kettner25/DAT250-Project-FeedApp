@@ -1,8 +1,9 @@
 package no.hvl.group17.feedapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -23,8 +27,22 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    @JsonManagedReference("user-polls")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Poll> polls = new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    @JsonManagedReference("user-votes")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+
+    public Boolean Verify() {
+        if (keycloakId == null || keycloakId.isEmpty()) return false;
+
+        if (username == null || username.isEmpty()) return false;
+
+        return email != null && !email.isEmpty();
+    }
 }
