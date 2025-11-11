@@ -122,7 +122,7 @@ public class VoteServiceTests {
 
         var True = voteService.createVote(vote);
 
-        assertThat(True).isTrue();
+        assertThat(True).isNotNull();
 
         vote = Vote.builder()
                 .option(pollRepository.findAll().getFirst().getOptions().get(1))
@@ -130,7 +130,7 @@ public class VoteServiceTests {
                 .publishedAt(Instant.now())
                 .build();
         True = voteService.createVote(vote);
-        assertThat(True).isTrue();
+        assertThat(True).isNotNull();
     }
 
     @Test
@@ -141,7 +141,7 @@ public class VoteServiceTests {
                 .publishedAt(Instant.now())
                 .build();
         var False = voteService.createVote(vote);
-        assertThat(False).isFalse();
+        assertThat(False).isNull();
 
         vote = Vote.builder()
                 .option(pollRepository.findAll().getFirst().getOptions().get(1))
@@ -150,7 +150,7 @@ public class VoteServiceTests {
                 .build();
 
         False = voteService.createVote(vote);
-        assertThat(False).isFalse();
+        assertThat(False).isNull();
     }
 
     @Test

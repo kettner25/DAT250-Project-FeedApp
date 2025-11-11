@@ -26,7 +26,7 @@
 |                    | edit         | /{pid}  | Put    | poll | poll               | Admin                    | Only adding options or reorder                                              |
 |                    | delete       | /{pid}  | Delete | -    | boolean            | Admin                    |                                                                             |
 | /polls/{pid}/votes |              |         |        |      |                    |                          |                                                                             |
-|                    | vote         | /       | Post   | vote | boolean            | -                        |                                                                             |
+|                    | vote         | /       | Post   | vote | vote id (int)      | -                        |                                                                             |
 |                    | unvote       | /{vid}  | Delete | -    | boolean            | User that voted \| Admin |                                                                             |
 | /polls/{pid}/count |              |         |        |      |                    |                          |                                                                             |
 |                    | GetCount     | /       | Get    | -    | List\<OptionCount> | -                        | Returns collection of options and vote counts for each {option, vote_count} |

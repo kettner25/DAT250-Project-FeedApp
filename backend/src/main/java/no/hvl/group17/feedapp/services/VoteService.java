@@ -56,24 +56,24 @@ public class VoteService {
      * @param vote Vote
      * @return if proceeded correctly
      * */
-    public Boolean createVote(Vote vote) {
+    public Integer createVote(Vote vote) {
         if (vote.getUser() != null) {
-            if (userService.getUser(vote.getUser().getId()) == null) return false;
+            if (userService.getUser(vote.getUser().getId()) == null) return null;
             vote.setAnonId(null);
 
-            if (voteRepo.existsVoteByUserID(vote.getUser().getId(), vote.getOption().getId())) return false;
+            if (voteRepo.existsVoteByUserID(vote.getUser().getId(), vote.getOption().getId())) return null;
         }
         else {
-            if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return false;
+            if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return null;
 
-            if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return false;
+            if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return null;
         }
 
-        if (pollService.getOptionById(vote.getOption().getId()) == null) return false;
+        if (pollService.getOptionById(vote.getOption().getId()) == null) return null;
 
         voteRepo.save(vote);
 
-        return true;
+        return vote.getId();
     }
 
     /**

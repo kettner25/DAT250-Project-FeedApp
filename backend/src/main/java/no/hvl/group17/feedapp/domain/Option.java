@@ -34,7 +34,7 @@ public class Option {
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference("option-votes")
-    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 
     public Boolean Verify() {

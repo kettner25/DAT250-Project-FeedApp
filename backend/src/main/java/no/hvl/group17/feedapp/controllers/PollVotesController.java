@@ -17,8 +17,8 @@ public class PollVotesController {
 
     /// Public
     @PostMapping("/")
-    public Boolean vote(@PathVariable int pid, @RequestBody Vote vote) {
-        if (!vote.Verify()) return false;
+    public Integer vote(@PathVariable int pid, @RequestBody Vote vote) {
+        if (!vote.Verify()) return null;
 
         return voteService.createVote(vote);
     }
