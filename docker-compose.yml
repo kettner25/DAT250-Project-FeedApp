@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+
+  redis:
+    image: redis:7
+    container_name: feedapp-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: feedapp-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Web UI
+    restart: always
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.2
+    container_name: feedapp-keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8081:8080"
