@@ -108,6 +108,6 @@ public class VoteService {
         rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
 
         return true;
-}
+    }
 
 }
