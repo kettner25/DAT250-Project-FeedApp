@@ -62,6 +62,7 @@ dist-ssr
 
 # Ignore generated frontend build in backend
 /backend/src/main/resources/static/
+db/
 /db/
 /data/
 .env
