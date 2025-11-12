@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte';
+    import { isAuthenticated, profile, login, logout } from './lib/auth';
     import {
         route,
         currentUser,
@@ -62,7 +63,7 @@
 
 <h1>The FeedApp</h1>
 
-<Header user={$currentUser} />
+<Header />
 
 <div class="layout">
         <Sidebar view={currentView} />

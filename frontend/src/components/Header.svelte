@@ -1,14 +1,8 @@
 <script>
-    // export
+    import { isAuthenticated, profile, login, logout } from '../lib/auth';
+
     // todo
-
-
-    export let user = null;
     export let cookie = "123456abc"
-    
-    function logOut() {
-        // todo
-    }
 </script>
 
 <style>
@@ -23,13 +17,15 @@
 
 <header>
     <span>Feed App</span>
-    {#if (user !== null)}
-        <span>{user.username}</span>
-        <span>{user.email}</span>
-        <button type="button">Log out</button>
+    {#if $isAuthenticated}
+        <span>{$profile?.username}</span>
+        <span>{$profile?.email}</span>
+<!--        <button on:click={loadMe}>Who am I?</button>-->
+<!--        <p>{me}</p>-->
+        <button on:click={logout}>Logout</button>
     {:else}
         <span>Anonymous user</span>
         <span>{cookie}</span>
-        <button type="button" on:click={logOut}>Log in / Register</button>
+        <button on:click={() => login()}>Login</button>
     {/if}
 </header>
