@@ -103,8 +103,9 @@ export async function deletePoll(uid, pid) {
     }
 }
 
-export async function castVote(pid, vote) {
-    const castedVote = await apiFetch(`/polls/${pid}/votes/`, {
+export async function castVote(user, vote) {
+    // todo anonymous votes
+    const castedVote = await apiFetch(`/polls/${user.pid}/votes/`, {
         method: "POST",
         body: JSON.stringify(vote)
     });

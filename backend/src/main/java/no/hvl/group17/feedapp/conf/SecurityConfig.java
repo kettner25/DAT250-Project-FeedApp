@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/health", "/public/**").permitAll()   // todo
                         .requestMatchers("/admin/**").hasRole("ADMIN")            // todo
                         .anyRequest().authenticated()                               // todo
+//                                .anyRequest().permitAll() // dev only
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();

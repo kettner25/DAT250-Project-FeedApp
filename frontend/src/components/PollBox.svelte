@@ -26,7 +26,7 @@
                 user: $currentUser,
             }
 
-            vote = await castVote($currentUser.id, vote);
+            vote = await castVote($currentUser, vote);
             if (vote) {
                 console.log(vote)
                 // todo

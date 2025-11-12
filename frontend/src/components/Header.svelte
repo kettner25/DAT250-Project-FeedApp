@@ -1,8 +1,6 @@
 <script>
     import { isAuthenticated, profile, login, logout } from '../lib/auth';
-
     // todo
-    export let cookie = "123456abc"
 </script>
 
 <style>
@@ -24,8 +22,8 @@
 <!--        <p>{me}</p>-->
         <button on:click={logout}>Logout</button>
     {:else}
-        <span>Anonymous user</span>
-        <span>{cookie}</span>
+        <span>Anonymous</span>
+        <span>User</span>
         <button on:click={() => login()}>Login</button>
     {/if}
 </header>
