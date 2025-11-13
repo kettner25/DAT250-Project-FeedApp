@@ -76,8 +76,9 @@ public class PollService {
      * @return Created poll
      * */
     public Poll createPoll(int uid, Poll poll) {
-        // todo fix
-        System.out.println(uid);
+        if (poll == null) return null;
+
+        if (uid != poll.getUser().getId()) return null;
 
         return pollRepo.save(poll);
     }
@@ -90,10 +91,11 @@ public class PollService {
      * @return Edited poll or Null
      * */
     public Poll editPoll(int uid, int pid, Poll poll) {
-        // todo fix
-        System.out.println(uid + " " + pid);
-
+        if (poll == null) return null;
         if (poll.getId() == null) return null;
+
+        if (uid != poll.getUser().getId()) return null;
+        if (pid != poll.getId()) return null;
 
         var dbPoll = getPollById(poll.getId());
 
@@ -117,10 +119,8 @@ public class PollService {
      * @return if proceeded correctly
      * */
     public Boolean deletePollById(int uid, int pid) {
-        // todo fix
-        System.out.println(uid);
-
         if (getPollById(pid) == null) return false;
+        if (getPollById(pid).getUser().getId() != uid) return false;
 
         pollRepo.deleteById(pid);
 

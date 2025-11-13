@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Disabled("Temporarily disabled until AUTH is ready")
-// todo fix
+// todo fix tests
 class UserControllerTests {
 
     @Autowired

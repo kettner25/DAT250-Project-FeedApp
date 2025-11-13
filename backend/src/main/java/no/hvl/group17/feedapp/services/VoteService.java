@@ -56,32 +56,36 @@ public class VoteService {
     /**
      * Vote on spec. option
      * @param uid ID of the user
-     * @param anonId ID from cookie for anonymouse voting
+     * @param aid ID from cookie for anonymouse voting
      * @param pid Poll id
      * @param vote Vote
      * @return if proceeded correctly
      * */
     @CacheEvict(value = "voteCounts", allEntries = true)
-    public Vote createVote(int uid, String anonId, int pid, Vote vote) {
-        // todo fix
-        System.out.println(uid + " " + anonId + " " + pid);
+    public Vote createVote(int uid, String aid, int pid, Vote vote) {
+        if (vote == null) return null;
 
+        var pollId = vote.getOption().getPoll().getId();
+        if (pollId != pid) return null;
 
-        if (vote.getUser() != null) {
-            if (userService.getUser(vote.getUser().getId()) == null) return null;
+        if (uid > 0) {
+            if (userService.getUser(uid) == null) return null;
+            vote.setUser(userService.getUser(uid));
             vote.setAnonId(null);
-
             if (voteRepo.existsVoteByUserID(vote.getUser().getId(), vote.getOption().getId())) return null;
         }
-        else {
-            if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return null;
-
+        else if (aid != null && !aid.isEmpty()) {
+            vote.setUser(null);
+            vote.setAnonId(aid);
             if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return null;
+        }
+        else {
+            return null;
         }
 
         var option = pollService.getOptionById(vote.getOption().getId());
         if (option == null) return null;
-        var pollId = option.getPoll().getId();
+        if (!pollId.equals(option.getPoll().getId())) return null;
 
         voteRepo.save(vote);
 
@@ -94,29 +98,40 @@ public class VoteService {
     /**
      * Unvote on spec. option
      * @param uid ID of the user
-     * @param anonId ID from cookie for anonymouse voting
+     * @param aid ID from cookie for anonymouse voting
      * @param pid Poll id
      * @param vid Vote id
      * @return if proceeded correctly
      * */
     @CacheEvict(value = "voteCounts", key = "#pid") // todo was #pollId
-    public Boolean deleteVote(int uid, String anonId, int pid, int vid) {
-        // todo fix
-        System.out.println(uid + " " + anonId + " " + pid + " " + vid);
-
-
-
+    public Boolean deleteVote(int uid, String aid, int pid, int vid) {
         var vote = getVoteById(vid);
         if (vote == null) return false;
 
         var pollId = vote.getOption().getPoll().getId();
+        if (pollId != pid) return false;
 
-        voteRepo.deleteById(vid);
+        boolean hasUser = uid > 0;
+        boolean hasAnonId = aid != null && !aid.isEmpty();
 
-        rabbitTemplate.convertAndSend("vote-events", "vote-deleted:" + vid);
-        rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
+        if (!hasUser && !hasAnonId) {
+            // No identity information provided
 
-        return true;
+            return false;
+        }
+
+        if ((hasUser && uid == vote.getUser().getId()) || (hasAnonId && aid.equals(vote.getAnonId()))) {
+            // Valid authorized user or valid anonymous
+
+            voteRepo.deleteById(vid);
+
+            rabbitTemplate.convertAndSend("vote-events", "vote-deleted:" + vid);
+            rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
+
+            return true;
+        }
+
+        return false;
     }
 
 }

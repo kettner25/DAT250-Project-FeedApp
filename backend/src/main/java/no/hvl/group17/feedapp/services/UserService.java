@@ -80,8 +80,7 @@ public class UserService {
     public User editUser(int uid, User user) {
         if (user.getId() == null) return null;
 
-        // todo fix
-        if (!user.getId().equals(uid)) return null;
+        if (uid != user.getId()) return null;
 
         var dbUser = getUser(user.getId());
 
@@ -109,7 +108,12 @@ public class UserService {
         return true;
     }
 
-    // todo comments
+    /**
+     * Public method to retrieve user from db or
+     * create a new one from incoming JWT
+     * @param jwt jwt
+     * @return user
+     */
     @Transactional
     public User getOrCreateFromJwt(Jwt jwt) {
         String keycloakId = jwt.getSubject();
@@ -121,7 +125,13 @@ public class UserService {
                 .orElseGet(() -> createNewUser(keycloakId, username, email));
     }
 
-    // todo comments
+    /**
+     * Helper method. Creates new user from JWT
+     * @param keycloakId from JWT
+     * @param username from JWT
+     * @param email from JWT
+     * @return user
+     */
     private User createNewUser(String keycloakId, String username, String email) {
         User user = User.builder()
                 .keycloakId(keycloakId)
@@ -132,7 +142,13 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    // todo comments
+    /**
+     * Helper method. Updates user if data changed from JWT
+     * @param user User to update
+     * @param username updated username
+     * @param email updated email
+     * @return user or updated user
+     */
     private User updateIfChanged(User user, String username, String email) {
         boolean changed = false;
 

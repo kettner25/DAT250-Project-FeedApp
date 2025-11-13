@@ -201,7 +201,7 @@ public class PollServiceTests {
     @Test
     void deletePollById_returnsTrue() {
         var pid = pollRepository.findAll().get(1).getId();
-        var uid = pollRepository.findAll().get(1).getUser().getId();
+        var uid = pollService.getPollById(pid).getUser().getId();
         var True = pollService.deletePollById(uid, pid);
         assertThat(True).isTrue();
         pollRepository.flush();
