@@ -34,16 +34,15 @@ function sortPollOptions(poll) {
 // ------- API calls -------
 
 export async function loadBootstrap() {
-    console.log(get(isAuthenticated))
-    const [meres, all, my] = await Promise.all([
+    const [_me, _all, _my] = await Promise.all([
         get(isAuthenticated) ? apiFetch("/me") : null,
         apiFetch("/polls"),
         get(isAuthenticated) ? apiFetch("/me/polls") : []
     ]);
 
-    if (meres) me.set(meres)
-    if (all) allPolls.set(all.map(sortPollOptions));
-    if (my) myPolls.set(my.map(sortPollOptions));
+    if (_me) me.set(_me)
+    if (_all) allPolls.set(_all.map(sortPollOptions));
+    if (_my) myPolls.set(_my.map(sortPollOptions));
 }
 
 export async function refresh() {
@@ -72,9 +71,6 @@ export async function user_updatePoll(pid, patch) {
         body: JSON.stringify(patch)
     });
 
-    console.log(patch);
-    console.log(updated);
-
     if (updated) {
         const sorted = sortPollOptions(updated);
         allPolls.update(list => list.map(p => (p.id === pid ? sorted : p)));
@@ -91,6 +87,14 @@ export async function user_getPoll(pid) {
     });
 
     return sortPollOptions(poll)
+}
+
+export async function user_getPollVotes(pid, oid) {
+    const poll = await apiFetch(`/polls/${pid}`, {
+        method: "GET",
+    });
+
+    return poll.options.find(p => p.id === oid).votes;
 }
 
 export async function user_deletePoll(pid) {
@@ -123,6 +127,13 @@ export async function user_remVote(pid, vid) {
     });
 
     return remVote;
+}
+
+export async function user_getVotes() {
+    const votes = await apiFetch("/me/votes", {
+        method: "GET",
+    });
+    return votes;
 }
 
 export async function anonym_castVote(pid, vote) {

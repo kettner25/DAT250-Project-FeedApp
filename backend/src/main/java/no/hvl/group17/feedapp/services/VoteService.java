@@ -65,9 +65,6 @@ public class VoteService {
     public Vote createVote(int uid, String aid, int pid, Vote vote) {
         if (vote == null) return null;
 
-        var pollId = vote.getOption().getPoll().getId();
-        if (pollId != pid) return null;
-
         if (uid > 0) {
             if (userService.getUser(uid) == null) return null;
             vote.setUser(userService.getUser(uid));
@@ -85,7 +82,8 @@ public class VoteService {
 
         var option = pollService.getOptionById(vote.getOption().getId());
         if (option == null) return null;
-        if (!pollId.equals(option.getPoll().getId())) return null;
+        var pollId = option.getPoll().getId();
+        if (!pollId.equals(pid)) return null;
 
         voteRepo.save(vote);
 

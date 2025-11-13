@@ -21,10 +21,6 @@
     $: currentView = $route;
 
     onMount(async () => {
-        console.log($profile)
-
-        location.hash = "all-polls"
-
         try {
             await loadBootstrap();
         } catch (e) {

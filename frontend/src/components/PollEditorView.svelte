@@ -88,8 +88,6 @@
         };
         await tick();  // Needed for focus after button press
         newOptionCaptionElemRef?.focus();
-
-        console.log(poll.options);
     }
 
     async function addOption(text) {
@@ -108,8 +106,6 @@
         newOption = "";
         await tick();  // Needed for focus after button press
         newOptionCaptionElemRef?.focus();
-
-        console.log(poll.options);
     }
 
     $: isPollValid = poll.question.trim() !== "" && poll.options.length >= 2;

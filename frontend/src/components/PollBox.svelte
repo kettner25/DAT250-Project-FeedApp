@@ -2,40 +2,50 @@
     import {
         user_deletePoll,
         user_castVote,
+        user_getPollVotes,
+        user_getVotes,
         user_remVote,
         me,
         pollToEdit,
     } from '../lib/store.js';
     import OptionRow from "./OptionRow.svelte";
 
-    // todo finish voting
+    // todo finish anonym voting
 
     export let poll;
     export let editable = false;
 
     let selectedOption = null;
 
+    async function voteAnonym(option) {
+
+    }
+
     async function vote(option) {
         if (selectedOption === null) {
-            // Cast new vote
-
             let vote = {
-                anonId: null,
                 publishedAt: new Date().toISOString(),
                 option: option,
                 user: $me,
             }
 
-            vote = await user_castVote(option.poll.id, vote);
-            if (vote) {
-                console.log(vote)
-                // todo voting ui
+            vote = await user_castVote(poll.id, vote);
+            if (vote)
                 selectedOption = option;
-            }
-        } else if (selectedOption === option) {
+        }
+        else if (selectedOption === option) {
+            const userVotes = await user_getVotes();                                    // todo improve
+            const optionVotes = await user_getPollVotes(poll.id, option.id);    // todo improve
+            const vote = optionVotes.find(optionVote => userVotes.some(userVote => userVote.id === optionVote.id));
+            console.log(userVotes);
+            console.log(optionVotes);
+            console.log(vote);
 
-            selectedOption = null;
-            // todo voting ui
+            if (vote) {
+                let res = await user_remVote(poll.id, vote.id);
+                if (res)
+                    selectedOption = null;
+            }
         }
     }
 
