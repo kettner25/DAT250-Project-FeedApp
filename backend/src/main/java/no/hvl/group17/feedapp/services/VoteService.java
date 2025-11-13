@@ -96,20 +96,15 @@ public class VoteService {
      * @param uid ID of the user
      * @param anonId ID from cookie for anonymouse voting
      * @param pid Poll id
-     * @param oid Option id
+     * @param vid Vote id
      * @return if proceeded correctly
      * */
     @CacheEvict(value = "voteCounts", key = "#pid") // todo was #pollId
-    public Boolean deleteVote(int uid, String anonId, int pid, int oid) {
+    public Boolean deleteVote(int uid, String anonId, int pid, int vid) {
         // todo fix
-        System.out.println(uid + " " + anonId + " " + pid + " " + oid);
-        Vote v = voteRepo.findAll().stream().filter(vote ->
-                        vote.getOption().getId() == oid &&
-                        vote.getUser().getId() == uid &&
-                        vote.getOption().getPoll().getId() == pid
-                ).findFirst().orElse(null);
-        if (v == null) return false;
-        int vid =  v.getId();
+        System.out.println(uid + " " + anonId + " " + pid + " " + vid);
+
+
 
         var vote = getVoteById(vid);
         if (vote == null) return false;

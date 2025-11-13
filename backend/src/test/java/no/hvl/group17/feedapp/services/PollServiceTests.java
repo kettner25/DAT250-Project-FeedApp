@@ -31,6 +31,9 @@ public class PollServiceTests {
 
     @BeforeEach
     void setup() {
+        userRepository.deleteAll();
+        pollRepository.deleteAll();
+
         userRepository.save(User.builder()
                 .keycloakId("1")
                 .username("alice")

@@ -156,7 +156,7 @@ public class VoteServiceTests {
     void deleteVoteById_returnsTrue() {
         var _ = voteRepository.findAll();
         Vote vote = voteRepository.findAll().getFirst();
-        var True = voteService.deleteVote(vote.getUser().getId(), "hello", vote.getOption().getPoll().getId(), vote.getOption().getId());
+        var True = voteService.deleteVote(vote.getUser().getId(), "hello", vote.getOption().getPoll().getId(), vote.getId());
 
         voteRepository.flush();
         assertThat(True).isTrue();

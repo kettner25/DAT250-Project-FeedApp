@@ -25,21 +25,22 @@ public class PollVotesController {
             @CookieValue(value = "anonId", required = false) String anonId
     ) {
         if (!vote.Verify()) return null;
-        // todo fix
-        int uid = userService.getOrCreateFromJwt(jwt).getId();
+
+        int uid = jwt == null ? -1 : userService.getOrCreateFromJwt(jwt).getId();
+
         return voteService.createVote(uid, anonId, pid, vote);
     }
 
     /// Public
-    @DeleteMapping("/{oid}")
+    @DeleteMapping("/{vid}")
     public Boolean unvote(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable int pid,
-            @PathVariable int oid,
+            @PathVariable int vid,
             @CookieValue(value = "anonId", required = false) String anonId
     ) {
-        // todo fix
-        int uid = userService.getOrCreateFromJwt(jwt).getId();
-        return voteService.deleteVote(uid, anonId, pid, oid);
+        int uid = jwt == null ? -1 : userService.getOrCreateFromJwt(jwt).getId();
+
+        return voteService.deleteVote(uid, anonId, pid, vid);
     }
 }

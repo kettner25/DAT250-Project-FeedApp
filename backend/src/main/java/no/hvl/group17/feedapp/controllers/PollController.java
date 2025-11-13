@@ -39,8 +39,11 @@ public class PollController {
     @PostMapping("")
     public Poll createPoll(@AuthenticationPrincipal Jwt jwt, @RequestBody Poll poll) {
         if (!poll.Verify()) return null;
-        // todo fix
+
         int uid = userService.getOrCreateFromJwt(jwt).getId();
+        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+            uid = poll.getUser().getId();
+
         return pollService.createPoll(uid, poll);
     }
 
@@ -49,8 +52,11 @@ public class PollController {
     @PutMapping("/{pid}")
     public Poll editPoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid, @RequestBody Poll poll) {
         if (!poll.Verify()) return null;
-        // todo fix
+
         int uid = userService.getOrCreateFromJwt(jwt).getId();
+        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+            uid = poll.getUser().getId();
+
         return pollService.editPoll(uid, pid, poll);
     }
 
@@ -58,8 +64,10 @@ public class PollController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/{pid}")
     public Boolean deletePoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid) {
-        // todo fix
         int uid = userService.getOrCreateFromJwt(jwt).getId();
+        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+            uid = pollService.getPollById(pid).getUser().getId();
+
         return pollService.deletePollById(uid, pid);
     }
 
