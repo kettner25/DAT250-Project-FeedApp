@@ -1,8 +1,9 @@
-import { getToken } from './auth';
+import { getToken } from './auth.js';
 
 // --- Config ---
-const API_BASE = "http://localhost:8080";
+const API_BASE = "http://localhost:8080/api";
 
+// --- Fetch helper ---
 export async function apiFetch(path, options = {}) {
     const token = getToken();
 

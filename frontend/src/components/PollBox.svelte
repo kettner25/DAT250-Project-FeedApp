@@ -1,9 +1,9 @@
 <script>
     import {
-        deletePoll,
-        castVote,
-        remVote,
-        currentUser,
+        user_deletePoll,
+        user_castVote,
+        user_remVote,
+        me,
         pollToEdit,
     } from '../lib/store.js';
     import OptionRow from "./OptionRow.svelte";
@@ -23,19 +23,19 @@
                 anonId: null,
                 publishedAt: new Date().toISOString(),
                 option: option,
-                user: $currentUser,
+                user: $me,
             }
 
-            vote = await castVote($currentUser, vote);
+            vote = await user_castVote(option.poll.id, vote);
             if (vote) {
                 console.log(vote)
-                // todo
+                // todo voting ui
                 selectedOption = option;
             }
         } else if (selectedOption === option) {
 
             selectedOption = null;
-            // todo
+            // todo voting ui
         }
     }
 
@@ -85,7 +85,7 @@
         <h3>{poll.question}</h3>
         {#if (editable)}
             <div class="header">
-                <button type="button" title="Delete" on:click={() => deletePoll($currentUser.id, poll.id)}>Delete</button>
+                <button type="button" title="Delete" on:click={() => user_deletePoll(poll.id)}>Delete</button>
                 <button type="button" title="Edit" on:click={edit}>Edit</button>
             </div>
         {/if}

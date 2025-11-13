@@ -2,17 +2,18 @@
     import { onMount, tick, onDestroy } from "svelte";
     import {
         newPollTemplate,
-        createPoll,
-        getPoll,
-        updatePoll, currentUser,
+        me,
+        user_createPoll,
+        user_updatePoll,
+        user_getPoll,
     } from '../lib/store.js';
+
     import OptionRow from "./OptionRow.svelte";
 
     export let pollId = null;
     export let title = "Edit Poll"
 
     let poll = $newPollTemplate;
-
     let questionElemRef = null;
     let newOptionCaptionElemRef = null;
     let newOption = "";
@@ -30,7 +31,7 @@
                 const template = $newPollTemplate;
                 poll = structuredClone ? structuredClone(template) : JSON.parse(JSON.stringify(template));
             } else {
-                const existing = await getPoll($currentUser.id, pollId);
+                const existing = await user_getPoll(pollId);
                 if (!existing) poll = null;
                 else poll = structuredClone ? structuredClone(existing) : JSON.parse(JSON.stringify(existing));
             }
@@ -122,12 +123,12 @@
             if (pollId === null) {
                 poll = {...poll, publishedAt: new Date().toISOString()};
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
-                poll = {...poll, user: $currentUser}
-                await createPoll($currentUser.id, poll);
+                poll = {...poll, user: $me}
+                await user_createPoll(poll);
             } else {
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
-                poll = {...poll, user: $currentUser}
-                await updatePoll($currentUser.id, pollId, poll);
+                poll = {...poll, user: $me}
+                await user_updatePoll(pollId, poll);
             }
         } catch (e) {
             console.error(e);

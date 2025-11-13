@@ -1,10 +1,9 @@
 <script>
-    // todo
-
+    /* todo admin view */
 </script>
 
 <style>
-
+    /* todo admin view */
 </style>
 
 <h2>Admin View</h2>

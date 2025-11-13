@@ -2,7 +2,6 @@
     import { tick } from "svelte";
 
     export let option;
-
     export let onMoveUp = null;
     export let onMoveDown = null;
     export let onRemove = null;
@@ -13,6 +12,8 @@
     export let canMoveDown = true;
 
     let inputElemRef = null;
+
+    $: votes = 0; // todo vote count
 
     async function moveUp() {
         onMoveUp?.(option);
@@ -64,7 +65,7 @@
     {#if viewOnly}
         <span class="caption">{option.caption}</span>
         <div class="buttons">
-<!--            <span class="voteCnt">{option?.voteIds?.length ?? 0}</span>-->
+            <span class="voteCnt">{votes}</span>
             <button type="button" title="Vote" on:click={vote}>Vote</button>
         </div>
     {:else}

@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/polls")
@@ -41,7 +42,7 @@ public class PollController {
         if (!poll.Verify()) return null;
 
         int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+        if (hasAdminRole(jwt))
             uid = poll.getUser().getId();
 
         return pollService.createPoll(uid, poll);
@@ -54,7 +55,7 @@ public class PollController {
         if (!poll.Verify()) return null;
 
         int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+        if (hasAdminRole(jwt))
             uid = poll.getUser().getId();
 
         return pollService.editPoll(uid, pid, poll);
@@ -65,7 +66,7 @@ public class PollController {
     @DeleteMapping("/{pid}")
     public Boolean deletePoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid) {
         int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (jwt.getClaimAsStringList("roles").contains("ADMIN"))
+        if (hasAdminRole(jwt))
             uid = pollService.getPollById(pid).getUser().getId();
 
         return pollService.deletePollById(uid, pid);
@@ -75,5 +76,14 @@ public class PollController {
     @GetMapping("/{pid}/count")
     public List<OptionCount> getVoteCount(@PathVariable int pid) {
         return voteService.getVoteCountsByPoll(pid);
+    }
+
+    /// Private helper
+    private static boolean hasAdminRole(Jwt jwt) {
+        Object realmAccess = jwt.getClaim("realm_access");
+        if (!(realmAccess instanceof Map<?, ?> realm)) return false;
+        Object rolesObj = realm.get("roles");
+        if (!(rolesObj instanceof List<?> roles)) return false;
+        return roles.contains("ADMIN");
     }
 }

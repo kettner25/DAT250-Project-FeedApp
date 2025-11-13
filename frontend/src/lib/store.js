@@ -1,15 +1,15 @@
-import { writable, derived } from "svelte/store";
+import { writable, get } from "svelte/store";
+import { isAuthenticated, profile } from './auth.js';
 import { apiFetch } from "./api.js"
 
 // --- Routing ---
+// todo fix routing
 export const route = writable(location.hash.replace("#", "") || "home");
 function setRoute() { route.set(location.hash.replace("#", "") || "home") }
 window.addEventListener("hashchange", setRoute);
 
 // --- User from our DB ---
 export const me = writable(null);
-export const currentUser = writable(null);
-export const role = writable(null);
 
 // --- Error ---
 export const errorStore = writable(null);
@@ -34,11 +34,14 @@ function sortPollOptions(poll) {
 // ------- API calls -------
 
 export async function loadBootstrap() {
-    const [all, my] = await Promise.all([
-        apiFetch("/polls/"),
-        currentUser?.id ? apiFetch(`/users/${currentUser.id}/polls/`) : []
+    console.log(get(isAuthenticated))
+    const [meres, all, my] = await Promise.all([
+        get(isAuthenticated) ? apiFetch("/me") : null,
+        apiFetch("/polls"),
+        get(isAuthenticated) ? apiFetch("/me/polls") : []
     ]);
 
+    if (meres) me.set(meres)
     if (all) allPolls.set(all.map(sortPollOptions));
     if (my) myPolls.set(my.map(sortPollOptions));
 }
@@ -47,8 +50,8 @@ export async function refresh() {
     await loadBootstrap();
 }
 
-export async function createPoll(uid, data) {
-    const created = await apiFetch(`/users/${uid}/polls/`, {
+export async function user_createPoll(data) {
+    const created = await apiFetch(`/polls`, {
         method: "POST",
         body: JSON.stringify(data)
     });
@@ -63,8 +66,8 @@ export async function createPoll(uid, data) {
     }
 }
 
-export async function updatePoll(uid, pid, patch) {
-    const updated = await apiFetch(`/users/${uid}/polls/${pid}`, {
+export async function user_updatePoll(pid, patch) {
+    const updated = await apiFetch(`/polls/${pid}`, {
         method: "PUT",
         body: JSON.stringify(patch)
     });
@@ -82,15 +85,16 @@ export async function updatePoll(uid, pid, patch) {
     }
 }
 
-export async function getPoll(uid, pid) {
-    const poll = await apiFetch(`/users/${uid}/polls/${pid}`, {
+export async function user_getPoll(pid) {
+    const poll = await apiFetch(`/polls/${pid}`, {
         method: "GET",
     });
+
     return sortPollOptions(poll)
 }
 
-export async function deletePoll(uid, pid) {
-    const deleted = await apiFetch(`/users/${uid}/polls/${pid}`, {
+export async function user_deletePoll(pid) {
+    const deleted = await apiFetch(`/polls/${pid}`, {
         method: "DELETE"
     });
 
@@ -104,19 +108,36 @@ export async function deletePoll(uid, pid) {
     }
 }
 
-export async function castVote(user, vote) {
-    // todo anonymous votes
-    const castedVote = await apiFetch(`/polls/${user.pid}/votes/`, {
+export async function user_castVote(pid, vote) {
+    const castedVote = await apiFetch(`/polls/${pid}/votes`, {
         method: "POST",
         body: JSON.stringify(vote)
     });
+
     return castedVote;
 }
 
-export async function remVote(pid, vid) {
+export async function user_remVote(pid, vid) {
     const remVote = await apiFetch(`/polls/${pid}/votes/${vid}`, {
         method: "DELETE"
     });
+
     return remVote;
 }
 
+export async function anonym_castVote(pid, vote) {
+    const castedVote = await apiFetch(`/polls/${pid}/votes`, {
+        method: "POST",
+        body: JSON.stringify(vote)
+    });
+
+    return castedVote;
+}
+
+export async function anonym_remVote(pid, vid) {
+    const remVote = await apiFetch(`/polls/${pid}/votes/${vid}`, {
+        method: "DELETE"
+    });
+
+    return remVote;
+}

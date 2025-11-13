@@ -1,11 +1,9 @@
 <script>
-    export let view = "home";
+    import { isAuthenticated, profile } from '../lib/auth';
 
-    import {
-        role,
-        currentUser
-    } from "../lib/store.js"
+    export let view = "all-polls";
 
+    // todo solve router
     function nav(to) {
         location.hash = to;
     }
@@ -29,11 +27,11 @@
 <nav>
     <span>Feed App</span>
     <button class:selected={view === "all-polls"} on:click={() => nav("all-polls")}>All Polls</button>
-    {#if $currentUser?.id}
+    {#if $isAuthenticated}
         <button class:selected={view === "my-polls"} on:click={() => nav("my-polls")}>My Polls</button>
         <button class:selected={view === "create"} on:click={() => nav("create")}>Create New Poll</button>
     {/if}
-    {#if role === "ADMIN"}
+    {#if $isAuthenticated && $profile?.roles?.includes("ADMIN")}
         <button class:selected={view === "admin"} on:click={() => nav("admin")}>Admin</button>
     {/if}
 </nav>

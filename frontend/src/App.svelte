@@ -1,15 +1,15 @@
 <script>
-    import { onMount } from 'svelte';
-    import { isAuthenticated, profile, login, logout } from './lib/auth';
+    import { onMount , onDestroy } from 'svelte';
+    import { isAuthenticated, profile } from './lib/auth';
     import {
         route,
-        currentUser,
         myPolls,
         allPolls,
         pollToEdit,
-        loadBootstrap,
         errorStore,
-        role,
+        loadBootstrap,
+        refresh,
+        me,
     } from './lib/store.js';
 
     import PollListView from "./components/PollListView.svelte";
@@ -21,6 +21,8 @@
     $: currentView = $route;
 
     onMount(async () => {
+        console.log($profile)
+
         location.hash = "all-polls"
 
         try {
@@ -68,15 +70,15 @@
 <div class="layout">
         <Sidebar view={currentView} />
     <div class="content">
-        {#if currentView === "create"}
+        {#if currentView === "create" && $isAuthenticated}
             <PollEditorView pollId={null} title="Create a New Poll" />
-        {:else if currentView === "edit" && $pollToEdit !== null}
+        {:else if currentView === "edit" && $pollToEdit !== null && $isAuthenticated}
             <PollEditorView pollId={$pollToEdit.id} title="Edit this Poll" />
-        {:else if currentView === "my-polls"}
+        {:else if currentView === "my-polls" && $isAuthenticated}
             <PollListView polls={$myPolls} title="My Polls" editable={true} />
         {:else if currentView === "all-polls"}
             <PollListView polls={$allPolls} title="All Polls" />
-        {:else if currentView === "admin" && role === "ADMIN"}
+        {:else if currentView === "admin" && $isAuthenticated && $profile?.roles?.includes("ADMIN")}
             <AdminView />
         {:else}
             <span>Error</span>

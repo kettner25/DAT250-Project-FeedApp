@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.conf;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,7 +32,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow frontend UI
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()   // Allow frontend UI
+                        .requestMatchers("/", "/index.html").permitAll()                                // Allow frontend UI
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                           // Allow frontend UI
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                           // Allow frontend UI
                         .requestMatchers(HttpMethod.GET,
                                 "/api/polls",          // GET all polls
                                 "/api/polls/*",        // GET single poll
