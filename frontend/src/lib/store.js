@@ -6,9 +6,10 @@ export const route = writable(location.hash.replace("#", "") || "home");
 function setRoute() { route.set(location.hash.replace("#", "") || "home") }
 window.addEventListener("hashchange", setRoute);
 
-// --- Auth / user ---
+// --- User from our DB ---
+export const me = writable(null);
 export const currentUser = writable(null);
-export const role = "USER"
+export const role = writable(null);
 
 // --- Error ---
 export const errorStore = writable(null);

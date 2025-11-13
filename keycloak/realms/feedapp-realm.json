@@ -425,7 +425,19 @@
       ]
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "357fc330-b789-431b-b59b-aa71c0d57292",
+      "name": "USERS",
+      "path": "/USERS",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [
+        "USER"
+      ],
+      "clientRoles": {}
+    }
+  ],
   "defaultRole": {
     "id": "5025d4ae-1a5f-49e1-86a5-5535a78f2dfe",
     "name": "default-roles-feedapp",
@@ -434,6 +446,9 @@
     "clientRole": false,
     "containerId": "8dcbe003-b955-4f94-a46d-6564875a57f7"
   },
+  "defaultGroups": [
+    "/USERS"
+  ],
   "requiredCredentials": [
     "password"
   ],
@@ -723,8 +738,8 @@
       "nodeReRegistrationTimeout": -1,
       "defaultClientScopes": [
         "web-origins",
-        "roles",
         "profile",
+        "roles",
         "email"
       ],
       "optionalClientScopes": []

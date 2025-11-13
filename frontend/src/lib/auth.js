@@ -1,35 +1,35 @@
 import Keycloak from 'keycloak-js';
 import { writable } from 'svelte/store';
 
-// in-memory auth state for your UI
 export const isAuthenticated = writable(false);
 export const profile = writable(null);
 
 export const keycloak = new Keycloak({
-    url: 'http://localhost:8081',   // Keycloak base URL
+    url: 'http://localhost:8081',
     realm: 'feedapp',
     clientId: 'feedapp-frontend'
 });
 
 export async function initAuth() {
     const authenticated = await keycloak.init({
-        onLoad: 'check-sso',  // or 'login-required' to force login immediately
+        onLoad: 'check-sso',
         pkceMethod: 'S256',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     });
 
     isAuthenticated.set(authenticated);
 
-    if (authenticated && keycloak.tokenParsed) {
+    if (authenticated && keycloak.idTokenParsed) {
         profile.set({
-            username: keycloak.tokenParsed.preferred_username,
-            email: keycloak.tokenParsed.email
+            username: keycloak.idTokenParsed.preferred_username,
+            email: keycloak.idTokenParsed.email,
+            keycloak_id: keycloak.idTokenParsed.sub,
+            roles: keycloak.realmAccess.roles,
         });
     } else {
         profile.set(null);
     }
 
-    // keep token fresh (refresh if <30s remaining)
     setInterval(async () => {
         if (!keycloak) return;
         try { await keycloak.updateToken(30); } catch (e) { /* ignore */ }

@@ -1,6 +1,11 @@
 <script>
     import { isAuthenticated, profile, login, logout } from '../lib/auth';
     // todo
+    let me;
+    function loadMe() {
+        console.log($profile);
+        console.log($isAuthenticated);
+    }
 </script>
 
 <style>
@@ -18,8 +23,8 @@
     {#if $isAuthenticated}
         <span>{$profile?.username}</span>
         <span>{$profile?.email}</span>
-<!--        <button on:click={loadMe}>Who am I?</button>-->
-<!--        <p>{me}</p>-->
+        <button on:click={loadMe}>Who am I?</button>
+        <p>{me}</p>
         <button on:click={logout}>Logout</button>
     {:else}
         <span>Anonymous</span>
