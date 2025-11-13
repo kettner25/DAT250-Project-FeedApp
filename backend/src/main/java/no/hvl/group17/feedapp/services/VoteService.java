@@ -1,9 +1,9 @@
 package no.hvl.group17.feedapp.services;
 
+import lombok.RequiredArgsConstructor;
 import no.hvl.group17.feedapp.domain.Vote;
 import no.hvl.group17.feedapp.models.OptionCount;
 import no.hvl.group17.feedapp.repositories.VoteRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.amqp.rabbit.core.RabbitTemplate; 
 import org.springframework.cache.annotation.Cacheable;                                                                                              
@@ -13,18 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class VoteService {
-    @Autowired
-    private VoteRepo voteRepo;
 
-    @Autowired
-    private PollService pollService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RabbitTemplate rabbitTemplate; 
+    private final VoteRepo voteRepo;
+    private final PollService pollService;
+    private final UserService userService;
+    private final RabbitTemplate rabbitTemplate;
 
     /**
      * Get vote by its ID
@@ -50,9 +45,9 @@ public class VoteService {
 
         List<OptionCount> res = new ArrayList<>();
         for (Object[] item : list) {
-            poll.getOptions().stream().filter(option -> option.getId() == (int) item[0]).findFirst().ifPresent(option -> {
-                res.add(new OptionCount(option, (int)(long)item[1]));
-            });
+            poll.getOptions().stream().filter(option ->
+                    option.getId() == (int) item[0]).findFirst().ifPresent(option ->
+                    res.add(new OptionCount(option, (int)(long)item[1])));
         }
 
         return res;
@@ -60,11 +55,18 @@ public class VoteService {
 
     /**
      * Vote on spec. option
+     * @param uid ID of the user
+     * @param anonId ID from cookie for anonymouse voting
+     * @param pid Poll id
      * @param vote Vote
      * @return if proceeded correctly
      * */
     @CacheEvict(value = "voteCounts", allEntries = true)
-    public Integer createVote(Vote vote) {
+    public Vote createVote(int uid, String anonId, int pid, Vote vote) {
+        // todo fix
+        System.out.println(uid + " " + anonId + " " + pid);
+
+
         if (vote.getUser() != null) {
             if (userService.getUser(vote.getUser().getId()) == null) return null;
             vote.setAnonId(null);
@@ -75,36 +77,48 @@ public class VoteService {
             if (vote.getAnonId() == null || vote.getAnonId().isEmpty()) return null;
 
             if (voteRepo.existsVoteByAnonID(vote.getAnonId(), vote.getOption().getId())) return null;
+        }
+
+        var option = pollService.getOptionById(vote.getOption().getId());
+        if (option == null) return null;
+        var pollId = option.getPoll().getId();
+
+        voteRepo.save(vote);
+
+        rabbitTemplate.convertAndSend("vote-events", pollId);
+
+        return vote;
     }
-
-    var option = pollService.getOptionById(vote.getOption().getId());
-    if (option == null) return null;
-    var pollId = option.getPoll().getId();
-
-    voteRepo.save(vote);
-
-    rabbitTemplate.convertAndSend("vote-events", pollId);
-
-    return vote.getId();
-}
 
 
     /**
      * Unvote on spec. option
-     * @param id Vote id
+     * @param uid ID of the user
+     * @param anonId ID from cookie for anonymouse voting
+     * @param pid Poll id
+     * @param oid Option id
      * @return if proceeded correctly
      * */
-    @CacheEvict(value = "voteCounts", key = "#pollId")
-    public Boolean deleteVote(int id) {
-        var vote = getVoteById(id);
+    @CacheEvict(value = "voteCounts", key = "#pid") // todo was #pollId
+    public Boolean deleteVote(int uid, String anonId, int pid, int oid) {
+        // todo fix
+        System.out.println(uid + " " + anonId + " " + pid + " " + oid);
+        Vote v = voteRepo.findAll().stream().filter(vote ->
+                        vote.getOption().getId() == oid &&
+                        vote.getUser().getId() == uid &&
+                        vote.getOption().getPoll().getId() == pid
+                ).findFirst().orElse(null);
+        if (v == null) return false;
+        int vid =  v.getId();
+
+        var vote = getVoteById(vid);
         if (vote == null) return false;
 
         var pollId = vote.getOption().getPoll().getId();
 
-        voteRepo.deleteById(id);
+        voteRepo.deleteById(vid);
 
-        // NEW: Send message to RabbitMQ queue when deleting a vote
-        rabbitTemplate.convertAndSend("vote-events", "vote-deleted:" + id);
+        rabbitTemplate.convertAndSend("vote-events", "vote-deleted:" + vid);
         rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
 
         return true;

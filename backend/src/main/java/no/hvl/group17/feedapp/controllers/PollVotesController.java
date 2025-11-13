@@ -1,31 +1,45 @@
 package no.hvl.group17.feedapp.controllers;
 
+import lombok.RequiredArgsConstructor;
 import no.hvl.group17.feedapp.domain.Vote;
-import no.hvl.group17.feedapp.services.PollService;
+import no.hvl.group17.feedapp.services.UserService;
 import no.hvl.group17.feedapp.services.VoteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/polls/{pid}/votes")
+@RequestMapping("/api/polls/{pid}/votes")
+@RequiredArgsConstructor
 public class PollVotesController {
-    @Autowired
-    private PollService pollService;
 
-    @Autowired
-    private VoteService voteService;
+    private final VoteService voteService;
+    private final UserService userService;
 
     /// Public
-    @PostMapping("/")
-    public Integer vote(@PathVariable int pid, @RequestBody Vote vote) {
+    @PostMapping("")
+    public Vote vote(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable int pid,
+            @RequestBody Vote vote,
+            @CookieValue(value = "anonId", required = false) String anonId
+    ) {
         if (!vote.Verify()) return null;
-
-        return voteService.createVote(vote);
+        // todo fix
+        int uid = userService.getOrCreateFromJwt(jwt).getId();
+        return voteService.createVote(uid, anonId, pid, vote);
     }
 
     /// Public
-    @DeleteMapping("/{vid}")
-    public Boolean delete(@PathVariable int vid) {
-        return voteService.deleteVote(vid);
+    @DeleteMapping("/{oid}")
+    public Boolean unvote(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable int pid,
+            @PathVariable int oid,
+            @CookieValue(value = "anonId", required = false) String anonId
+    ) {
+        // todo fix
+        int uid = userService.getOrCreateFromJwt(jwt).getId();
+        return voteService.deleteVote(uid, anonId, pid, oid);
     }
 }

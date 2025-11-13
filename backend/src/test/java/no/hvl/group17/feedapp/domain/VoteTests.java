@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +37,7 @@ public class VoteTests {
         var vote = Vote.builder()
                 .id(1)
                 .option(option)
-                .anonId("kjkgddajkh")
+                .anonId("hello")
                 .publishedAt(Instant.now())
                 .build();
 
@@ -60,11 +59,9 @@ public class VoteTests {
 
     @Test
     void voteOptionMissing_returnsFalse() {
-        var option = Option.builder().id(1).caption("Pancakes").build();
-
         var vote = Vote.builder()
                 .id(1)
-                .anonId("kjkgddajkh")
+                .anonId("hello")
                 .publishedAt(Instant.now())
                 .build();
 

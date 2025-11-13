@@ -9,7 +9,6 @@ import no.hvl.group17.feedapp.models.OptionCount;
 import no.hvl.group17.feedapp.repositories.PollRepo;
 import no.hvl.group17.feedapp.repositories.UserRepo;
 import no.hvl.group17.feedapp.repositories.VoteRepo;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +119,7 @@ public class VoteServiceTests {
                 .publishedAt(Instant.now())
                 .build();
 
-        var True = voteService.createVote(vote);
+        var True = voteService.createVote(vote.getUser().getId(), "hello", vote.getOption().getPoll().getId(), vote);
 
         assertThat(True).isNotNull();
 
@@ -129,7 +128,7 @@ public class VoteServiceTests {
                 .anonId("_10203040506_")
                 .publishedAt(Instant.now())
                 .build();
-        True = voteService.createVote(vote);
+        True = voteService.createVote(0, "hello", vote.getOption().getPoll().getId(), vote);
         assertThat(True).isNotNull();
     }
 
@@ -140,7 +139,7 @@ public class VoteServiceTests {
                 .user(userRepository.findAll().getFirst())
                 .publishedAt(Instant.now())
                 .build();
-        var False = voteService.createVote(vote);
+        var False = voteService.createVote(vote.getUser().getId(), "hello", vote.getOption().getPoll().getId(), vote);
         assertThat(False).isNull();
 
         vote = Vote.builder()
@@ -149,18 +148,19 @@ public class VoteServiceTests {
                 .publishedAt(Instant.now())
                 .build();
 
-        False = voteService.createVote(vote);
+        False = voteService.createVote(0, "hello", 0, vote);
         assertThat(False).isNull();
     }
 
     @Test
     void deleteVoteById_returnsTrue() {
-        var a = voteRepository.findAll();
-        var True = voteService.deleteVote(voteRepository.findAll().getFirst().getId());
+        var _ = voteRepository.findAll();
+        Vote vote = voteRepository.findAll().getFirst();
+        var True = voteService.deleteVote(vote.getUser().getId(), "hello", vote.getOption().getPoll().getId(), vote.getOption().getId());
 
         voteRepository.flush();
         assertThat(True).isTrue();
-        a = voteRepository.findAll();
+        var _ = voteRepository.findAll();
         assertThat(voteRepository.findAll().size()).isEqualTo(1);
         assertThat(voteRepository.existsVoteByUserID(userRepository.findAll().getFirst().getId(),
                 pollRepository.findAll().getFirst().getOptions().get(1).getId())).isEqualTo(false);
@@ -168,7 +168,7 @@ public class VoteServiceTests {
 
     @Test
     void deleteVoteById_returnsFalse() {
-        var False = voteService.deleteVote(-1);
+        var False = voteService.deleteVote(-1, "", -1, -1);
 
         assertThat(False).isFalse();
         assertThat(voteRepository.findAll().size()).isEqualTo(2);

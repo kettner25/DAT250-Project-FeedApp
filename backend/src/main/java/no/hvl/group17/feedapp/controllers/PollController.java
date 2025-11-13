@@ -1,26 +1,29 @@
 package no.hvl.group17.feedapp.controllers;
 
+import lombok.RequiredArgsConstructor;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.models.OptionCount;
 import no.hvl.group17.feedapp.services.PollService;
+import no.hvl.group17.feedapp.services.UserService;
 import no.hvl.group17.feedapp.services.VoteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/polls")
+@RequestMapping("/api/polls")
+@RequiredArgsConstructor
 public class PollController {
 
-    @Autowired
-    private PollService pollService;
-
-    @Autowired
-    private VoteService voteService;
+    private final PollService pollService;
+    private final VoteService voteService;
+    private final UserService userService;
 
     /// Public
-    @GetMapping("/")
+    @GetMapping("")
     public List<Poll> getAll() {
         return pollService.getAllPolls();
     }
@@ -31,26 +34,33 @@ public class PollController {
         return pollService.getPollById(pid);
     }
 
-    /// ADMIN
-    @PostMapping("/")
-    public Poll createPoll(@RequestBody Poll poll) {
+    /// Authenticated USER or ADMIN
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("")
+    public Poll createPoll(@AuthenticationPrincipal Jwt jwt, @RequestBody Poll poll) {
         if (!poll.Verify()) return null;
-
-        return pollService.createPoll(poll);
+        // todo fix
+        int uid = userService.getOrCreateFromJwt(jwt).getId();
+        return pollService.createPoll(uid, poll);
     }
 
-    /// ADMIN
+    /// Authenticated USER or ADMIN
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/{pid}")
-    public Poll editPoll(@PathVariable int pid, @RequestBody Poll poll) {
+    public Poll editPoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid, @RequestBody Poll poll) {
         if (!poll.Verify()) return null;
-
-        return pollService.editPoll(poll);
+        // todo fix
+        int uid = userService.getOrCreateFromJwt(jwt).getId();
+        return pollService.editPoll(uid, pid, poll);
     }
 
-    /// ADMIN
+    /// Authenticated USER or ADMIN
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/{pid}")
-    public Boolean deletePoll(@PathVariable int pid) {
-        return pollService.deletePollById(pid);
+    public Boolean deletePoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid) {
+        // todo fix
+        int uid = userService.getOrCreateFromJwt(jwt).getId();
+        return pollService.deletePollById(uid, pid);
     }
 
     /// Public

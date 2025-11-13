@@ -4,6 +4,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class AnonCookieSigner {
     private static final String HMAC_ALGO = "HmacSHA256";
 

@@ -1,6 +1,5 @@
 package no.hvl.group17.feedapp.services;
 
-import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.repositories.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.*;
 
-import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -60,7 +58,7 @@ public class UserServiceTests {
 
     @Test
     void getUserById_returnsUser() {
-        var user1 = userService.getUser(userRepository.findAll().get(0).getId());
+        var user1 = userService.getUser(userRepository.findAll().getFirst().getId());
         assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
 
@@ -78,7 +76,7 @@ public class UserServiceTests {
     @Test
     void getUserByUsername_returnsUser() {
         var user1 = userService.getUser("alice");
-        assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
+        assertThat(user1.getId()).isEqualTo(userRepository.findAll().getFirst().getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
 
         var user2 = userService.getUser("delete");
@@ -95,7 +93,7 @@ public class UserServiceTests {
     @Test
     void getUserByEmail_returnsUser() {
         var user1 = userService.getUserByEmail("alice@mail.com");
-        assertThat(user1.getId()).isEqualTo(userRepository.findAll().get(0).getId());
+        assertThat(user1.getId()).isEqualTo(userRepository.findAll().getFirst().getId());
         assertThat(user1.getUsername()).isEqualTo("alice");
         assertThat(user1.getEmail()).isEqualTo("alice@mail.com");
     }
@@ -172,40 +170,40 @@ public class UserServiceTests {
 
     @Test
     void updateUser_returnsUser() {
-        var user = userService.getUser(userRepository.findAll().get(0).getId());
+        var user = userService.getUser(userRepository.findAll().getFirst().getId());
 
         user.setEmail("Alice.ana@gmail.com");
-        var edited = userService.editUser(user);
+        var edited = userService.editUser(user.getId(), user);
 
-        assertThat(edited.getId()).isEqualTo(userRepository.findAll().get(0).getId());
+        assertThat(edited.getId()).isEqualTo(userRepository.findAll().getFirst().getId());
         assertThat(edited.getEmail()).isEqualTo(user.getEmail());
 
-        //Check that not addded
+        //Check that not added
         var users = userService.getAllUsers();
         assertThat(users).hasSize(4);
     }
 
     @Test
     void updateUser_returnsNull() {
-        var user = userService.getUser(userRepository.findAll().get(0).getId());
+        var user = userService.getUser(userRepository.findAll().getFirst().getId());
 
         user.setEmail("delete@mail.com");
-        var edited = userService.editUser(user);
+        var edited = userService.editUser(user.getId(), user);
 
         assertThat(edited).isNull();
 
-        //Check that not addded
+        //Check that not added
         var users = userService.getAllUsers();
         assertThat(users).hasSize(4);
     }
 
     @Test
     void updateUser_noUpdates_returnsUser() {
-        var user = userService.getUser(userRepository.findAll().get(0).getId());
+        var user = userService.getUser(userRepository.findAll().getFirst().getId());
 
-        var edited = userService.editUser(user);
+        var edited = userService.editUser(user.getId(), user);
 
-        assertThat(edited.getId()).isEqualTo(userRepository.findAll().get(0).getId());
+        assertThat(edited.getId()).isEqualTo(userRepository.findAll().getFirst().getId());
         assertThat(edited.getEmail()).isEqualTo(user.getEmail());
     }
 
@@ -217,11 +215,11 @@ public class UserServiceTests {
                 .email("alice.kernel@emal.com")
                 .build();
 
-        var edited = userService.editUser(user);
+        var edited = userService.editUser(0, user);
 
         assertThat(edited).isEqualTo(null);
 
-        //Check that not addded
+        //Check that not added
         var users = userService.getAllUsers();
         assertThat(users).hasSize(4);
     }

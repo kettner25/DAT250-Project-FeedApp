@@ -1,21 +1,20 @@
 package no.hvl.group17.feedapp.services;
 
+import lombok.RequiredArgsConstructor;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.repositories.PollRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class PollService {
-    @Autowired
-    private PollRepo pollRepo;
 
-    @Autowired
-    private UserService userService;
+    private final PollRepo pollRepo;
+    private final UserService userService;
 
     /**
      * Get all polls
@@ -72,48 +71,58 @@ public class PollService {
 
     /**
      * Create poll
+     * @param uid  ID of the user
      * @param poll Poll to be created
      * @return Created poll
      * */
-    public Poll createPoll(Poll poll) {
+    public Poll createPoll(int uid, Poll poll) {
+        // todo fix
+        System.out.println(uid);
+
         return pollRepo.save(poll);
     }
 
     /**
      * Edit poll
+     * @param uid  User id
+     * @param pid  Poll id to be edited
      * @param poll Poll to be edited
      * @return Edited poll or Null
      * */
-    public Poll editPoll(Poll poll) {
+    public Poll editPoll(int uid, int pid, Poll poll) {
+        // todo fix
+        System.out.println(uid + " " + pid);
+
         if (poll.getId() == null) return null;
 
         var dbPoll = getPollById(poll.getId());
 
-        if (dbPoll == null) return  null;
+        if (dbPoll == null) return null;
 
         //Set allowed poll params
         dbPoll.setValidUntil(poll.getValidUntil());
-        poll.getOptions().forEach((option) -> {
-           dbPoll.getOptions().stream().filter(option2 ->
-                   Objects.equals(option2.getId(), option.getId())).findFirst().ifPresentOrElse(option2 -> {
-                      option2.setOrder(option.getOrder());
-                   }, () -> {
-                       dbPoll.getOptions().add(option);
-                   });
-        });
+        poll.getOptions().forEach((option) ->
+                dbPoll.getOptions().stream().filter(option2 ->
+                        Objects.equals(option2.getId(), option.getId())).findFirst().ifPresentOrElse(option2 ->
+                        option2.setOrder(option.getOrder()), () ->
+                        dbPoll.getOptions().add(option)));
 
         return pollRepo.save(dbPoll);
     }
 
     /**
      * Delete poll by its ID
-     * @param id ID of poll
+     * @param uid ID of user
+     * @param pid ID of poll
      * @return if proceeded correctly
      * */
-    public Boolean deletePollById(int id) {
-        if (getPollById(id) == null) return false;
+    public Boolean deletePollById(int uid, int pid) {
+        // todo fix
+        System.out.println(uid);
 
-        pollRepo.deleteById(id);
+        if (getPollById(pid) == null) return false;
+
+        pollRepo.deleteById(pid);
 
         return true;
     }

@@ -2,7 +2,6 @@ package no.hvl.group17.feedapp.repositories;
 
 import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.User;
-import no.hvl.group17.feedapp.services.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -43,6 +41,24 @@ public class UserRepoTests {
     }
 
     @Test
+    void findByKeycloakId_returnUser() {
+        var user = userRepository.findByKeycloakId("1");
+
+        assertThat(user.orElseThrow().getId()).isEqualTo(userRepository.findAll().getFirst().getId());
+        assertThat(user.orElseThrow().getUsername()).isEqualTo("alice");
+
+        user = userRepository.findByKeycloakId("2");
+        assertThat(user.orElseThrow().getId()).isEqualTo(userRepository.findAll().get(1).getId());
+        assertThat(user.orElseThrow().getUsername()).isEqualTo("bob");
+    }
+
+    @Test
+    void findByKeycloakId_returnNull() {
+        var user = userRepository.findByKeycloakId("67");
+        assertThat(user).isEqualTo(Optional.empty());
+    }
+
+    @Test
     void findByUsername_returnUser() {
         var user = userRepository.findByUsername("alice");
 
@@ -56,7 +72,7 @@ public class UserRepoTests {
 
     @Test
     void findByUsername_returnNull() {
-        var user = userRepository.findByUsername("Ahoj");
+        var user = userRepository.findByUsername("hello");
         assertThat(user).isEqualTo(Optional.empty());
     }
 

@@ -2,7 +2,6 @@ package no.hvl.group17.feedapp.controllers;
 
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.repositories.UserRepo;
-import no.hvl.group17.feedapp.services.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -21,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Disabled("Temporarily disabled until AUTH is ready")
+// todo fix
 class UserControllerTests {
 
     @Autowired

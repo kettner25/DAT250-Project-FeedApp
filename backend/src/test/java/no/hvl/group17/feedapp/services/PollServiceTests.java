@@ -1,6 +1,5 @@
 package no.hvl.group17.feedapp.services;
 
-import jakarta.transaction.Transactional;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
@@ -112,9 +111,9 @@ public class PollServiceTests {
 
     @Test
     void getOptionById_returnsOption() {
-        var option = pollService.getOptionById(pollRepository.findAll().getFirst().getOptions().get(0).getId());
+        var option = pollService.getOptionById(pollRepository.findAll().getFirst().getOptions().getFirst().getId());
 
-        assertThat(option.getId()).isEqualTo(pollRepository.findAll().getFirst().getOptions().get(0).getId());
+        assertThat(option.getId()).isEqualTo(pollRepository.findAll().getFirst().getOptions().getFirst().getId());
         assertThat(option.getCaption()).isEqualTo("Pancakes");
     }
 
@@ -157,7 +156,7 @@ public class PollServiceTests {
                         Option.builder().caption("Nope").build()))
                 .build();
         poll.linkOptions();
-        var poll1 = pollService.createPoll(poll);
+        var poll1 = pollService.createPoll(poll.getUser().getId(), poll);
 
         assertThat(poll1.getId()).isEqualTo(pollRepository.findAll().getLast().getId());
         assertThat(poll1.getQuestion()).isEqualTo("Favorite food 2?");
@@ -173,7 +172,7 @@ public class PollServiceTests {
         var date = Instant.now();
         poll.setValidUntil(date);
 
-        var poll1 = pollService.editPoll(poll);
+        var poll1 = pollService.editPoll(poll.getUser().getId(), poll.getId(), poll);
         assertThat(poll1.getId()).isEqualTo(pollRepository.findAll().getFirst().getId());
         assertThat(poll1.getValidUntil()).isEqualTo(date);
 
@@ -190,7 +189,7 @@ public class PollServiceTests {
                         Option.builder().caption("Nope").build()))
                 .build();
 
-        var poll1 = pollService.editPoll(poll);
+        var poll1 = pollService.editPoll(poll.getUser().getId(), 0, poll);
         assertThat(poll1).isNull();
 
         assertThat(pollService.getAllPolls().size()).isEqualTo(3);
@@ -198,16 +197,17 @@ public class PollServiceTests {
 
     @Test
     void deletePollById_returnsTrue() {
-        var id = pollRepository.findAll().get(1).getId();
-        var True = pollService.deletePollById(id);
+        var pid = pollRepository.findAll().get(1).getId();
+        var uid = pollRepository.findAll().get(1).getUser().getId();
+        var True = pollService.deletePollById(uid, pid);
         assertThat(True).isTrue();
         pollRepository.flush();
-        assertThat(pollService.getPollById(id)).isNull();
+        assertThat(pollService.getPollById(pid)).isNull();
     }
 
     @Test
     void deletePollById_returnsFalse() {
-        var False = pollService.deletePollById(-1);
+        var False = pollService.deletePollById(0, -1);
         assertThat(False).isFalse();
     }
 }
