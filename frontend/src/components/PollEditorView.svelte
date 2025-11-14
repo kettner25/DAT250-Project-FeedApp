@@ -4,9 +4,10 @@
     import {
         me,
         newPollTemplate,
-        user_createPoll,
-        user_getPoll,
-        user_updatePoll
+        createPoll,
+        getPoll,
+        updatePoll,
+        navigate
     } from '../lib/store.js';
     import { onDestroy, onMount, tick } from "svelte";
 
@@ -33,7 +34,7 @@
                 const template = $newPollTemplate;
                 poll = structuredClone ? structuredClone(template) : JSON.parse(JSON.stringify(template));
             } else {
-                const existing = await user_getPoll(pollId);
+                const existing = await getPoll(pollId);
                 if (!existing) poll = null;
                 else poll = structuredClone ? structuredClone(existing) : JSON.parse(JSON.stringify(existing));
             }
@@ -122,11 +123,10 @@
                 poll = {...poll, publishedAt: new Date().toISOString()};
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
                 poll = {...poll, user: $me}
-                await user_createPoll(poll);
+                await createPoll(poll);
             } else {
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
-                poll = {...poll, user: $me}
-                await user_updatePoll(pollId, poll);
+                await updatePoll(pollId, poll);
             }
         } catch (e) {
             console.error(e);
@@ -134,7 +134,7 @@
 
         // Route to my polls
         poll = $newPollTemplate;
-        location.hash = "my-polls";
+        navigate("all-polls");
     }
 </script>
 

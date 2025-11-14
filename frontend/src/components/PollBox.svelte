@@ -4,9 +4,9 @@
     import {
         me,
         pollToEdit,
-        user_castVote,
-        user_deletePoll,
-        user_remVote,
+        castVote,
+        deletePoll,
+        remVote,
         navigate,
         refresh
     } from '../lib/store.js';
@@ -53,7 +53,7 @@
                 anonId: $isAuthenticated ? null : anonId,
             };
 
-            vote = await user_castVote(poll.id, vote);
+            vote = await castVote(poll.id, vote);
             if (vote) {
                 const updatedOption = { ...option, votes: [...(option.votes ?? []), vote] };
                 poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
@@ -68,7 +68,7 @@
 
             if (!voteToRemove) return;
 
-            const res = await user_remVote(poll.id, voteToRemove.id);
+            const res = await remVote(poll.id, voteToRemove.id);
             if (res) {
                 const updatedOption = { ...option, votes: (option.votes ?? []).filter(v => v.id !== voteToRemove.id) };
                 poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
@@ -83,7 +83,7 @@
                 : oldOption.votes?.find(v => v.anonId === anonId);
             if (!oldVote) return;
 
-            const removed = await user_remVote(poll.id, oldVote.id);
+            const removed = await remVote(poll.id, oldVote.id);
             if (!removed) return;
 
             const updatedOldOption = { ...oldOption, votes: (oldOption.votes ?? []).filter(v => v.id !== oldVote.id) };
@@ -96,7 +96,7 @@
                 anonId: $isAuthenticated ? null : anonId,
             };
 
-            newVote = await user_castVote(poll.id, newVote);
+            newVote = await castVote(poll.id, newVote);
             if (!newVote) return;
 
             const updatedNewOption = { ...option, votes: [...(option.votes ?? []), newVote] };
@@ -157,7 +157,7 @@
         <h3>{poll.question}</h3>
         {#if (editable)}
             <div class="header">
-                <button type="button" title="Delete" on:click={() => user_deletePoll(poll.id)}>Delete</button>
+                <button type="button" title="Delete" on:click={() => deletePoll(poll.id)}>Delete</button>
                 <button type="button" title="Edit" on:click={edit}>Edit</button>
             </div>
         {/if}

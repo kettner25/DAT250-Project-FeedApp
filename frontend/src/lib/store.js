@@ -75,7 +75,7 @@ export async function refresh() {
     await loadBootstrap();
 }
 
-export async function user_createPoll(data) {
+export async function createPoll(data) {
     const created = await apiFetch(`/polls`, {
         method: "POST",
         body: JSON.stringify(data)
@@ -90,7 +90,7 @@ export async function user_createPoll(data) {
     }
 }
 
-export async function user_updatePoll(pid, patch) {
+export async function updatePoll(pid, patch) {
     const updated = await apiFetch(`/polls/${pid}`, {
         method: "PUT",
         body: JSON.stringify(patch)
@@ -105,7 +105,7 @@ export async function user_updatePoll(pid, patch) {
     }
 }
 
-export async function user_getPoll(pid) {
+export async function getPoll(pid) {
     const poll = await apiFetch(`/polls/${pid}`, {
         method: "GET",
     });
@@ -113,7 +113,7 @@ export async function user_getPoll(pid) {
     return sortPollOptions(poll)
 }
 
-export async function user_deletePoll(pid) {
+export async function deletePoll(pid) {
     const deleted = await apiFetch(`/polls/${pid}`, {
         method: "DELETE"
     });
@@ -127,14 +127,14 @@ export async function user_deletePoll(pid) {
     }
 }
 
-export async function user_castVote(pid, vote) {
+export async function castVote(pid, vote) {
     return await apiFetch(`/polls/${pid}/votes`, {
         method: "POST",
         body: JSON.stringify(vote)
     });
 }
 
-export async function user_remVote(pid, vid) {
+export async function remVote(pid, vid) {
     return await apiFetch(`/polls/${pid}/votes/${vid}`, {
         method: "DELETE"
     });

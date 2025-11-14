@@ -16,7 +16,6 @@
     import PollListView from "./components/PollListView.svelte";
     import Header from "./components/Header.svelte";
     import Sidebar from "./components/Sidebar.svelte";
-    import AdminView from "./components/AdminView.svelte";
     import PollEditorView from "./components/PollEditorView.svelte";
 
     $: currentView = $route;
@@ -81,7 +80,7 @@
         {:else if currentView === "all-polls"}
             <PollListView polls={$allPolls} title="All Polls" />
         {:else if currentView === "admin" && $isAuthenticated && $profile?.roles?.includes("ADMIN")}
-            <AdminView />
+            <PollListView polls={$allPolls} title="Admin Poll Tools" editable={true} />
         {:else}
             <PollListView polls={$allPolls} title="All Polls" />
         {/if}
