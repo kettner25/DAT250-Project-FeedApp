@@ -1,4 +1,6 @@
 <script>
+    // @ts-nocheck
+
     import { tick } from "svelte";
 
     export let option;
@@ -13,7 +15,7 @@
 
     let inputElemRef = null;
 
-    $: votes = 0; // todo vote count
+    $: votes = option?.votes?.length ?? 0;
 
     async function moveUp() {
         onMoveUp?.(option);

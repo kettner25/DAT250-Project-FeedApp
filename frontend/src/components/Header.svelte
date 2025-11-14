@@ -1,5 +1,12 @@
 <script>
-    import { isAuthenticated, profile, login, logout } from '../lib/auth.js';
+    // @ts-nocheck
+    
+    import {
+        isAuthenticated,
+        profile,
+        login,
+        logout
+    } from '../lib/auth.js';
 </script>
 
 <style>

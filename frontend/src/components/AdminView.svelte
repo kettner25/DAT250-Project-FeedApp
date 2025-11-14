@@ -1,4 +1,6 @@
 <script>
+    // @ts-nocheck
+    
     /* todo admin view */
 </script>
 

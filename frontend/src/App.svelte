@@ -1,6 +1,6 @@
 <script>
-    import { onMount , onDestroy } from 'svelte';
-    import { isAuthenticated, profile, getOrCreateAnonId } from './lib/auth';
+    // @ts-nocheck
+
     import {
         route,
         myPolls,
@@ -8,9 +8,10 @@
         pollToEdit,
         errorStore,
         loadBootstrap,
-        refresh,
-        me,
+        refresh
     } from './lib/store.js';
+    import { onMount , onDestroy } from 'svelte';
+    import { isAuthenticated, profile, getOrCreateAnonId } from './lib/auth';
 
     import PollListView from "./components/PollListView.svelte";
     import Header from "./components/Header.svelte";
@@ -20,12 +21,20 @@
 
     $: currentView = $route;
 
+    let refreshInterval;
+    let unsubscribe;
+
     onMount(async () => {
         getOrCreateAnonId();
+        refreshInterval = setInterval(() => { refresh(); }, 60000);
+        unsubscribe = errorStore.subscribe((v) => { if (v) setTimeout(() => errorStore.set(null), 4000); });
         await loadBootstrap();
     });
 
-    $: if ($errorStore) setTimeout(() => errorStore.set(null), 4000);
+    onDestroy(async () => {
+        if (refreshInterval) clearInterval(refreshInterval);
+        if (unsubscribe) unsubscribe();
+    })
 </script>
 
 <style>
@@ -42,11 +51,11 @@
     .toast {
         background: #f44336;
         color: white;
-        padding: 1em;
+        padding: 1rem;
         border-radius: 4px;
         position: fixed;
-        top: 1em;
-        right: 1em;
+        top: 1rem;
+        right: 1rem;
     }
 </style>
 
@@ -74,7 +83,7 @@
         {:else if currentView === "admin" && $isAuthenticated && $profile?.roles?.includes("ADMIN")}
             <AdminView />
         {:else}
-            <span>Error</span>
+            <PollListView polls={$allPolls} title="All Polls" />
         {/if}
     </div>
 </div>

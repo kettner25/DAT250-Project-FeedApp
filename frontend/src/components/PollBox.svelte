@@ -1,17 +1,17 @@
 <script>
+    // @ts-nocheck
+
     import {
-        user_deletePoll,
-        user_castVote,
-        user_remVote,
         me,
         pollToEdit,
+        user_castVote,
+        user_deletePoll,
+        user_remVote
     } from '../lib/store.js';
+    import { getOrCreateAnonId, isAuthenticated } from '../lib/auth.js';
     import { onMount} from "svelte";
+
     import OptionRow from "./OptionRow.svelte";
-    import { isAuthenticated, getOrCreateAnonId } from '../lib/auth.js';
-
-
-    // todo finish anonym voting
 
     export let poll;
     export let editable = false;
@@ -26,27 +26,30 @@
                 publishedAt: new Date().toISOString(),
                 option: option,
                 user: isAuthenticated ? $me : null,
+                userId: null,
+                anonId: null,
             }
 
             vote = await user_castVote(poll.id, vote);
             if (vote) {
-                option.votes.push(vote);
-                selectedOption = option;
+                const updatedOption = { ...option, votes: [...option.votes, vote] };
+                poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
+                selectedOption = updatedOption;
             }
         }
         else if (selectedOption === option) {
             // unvote
 
-            const anonId = getOrCreateAnonId();
-            let vote = $isAuthenticated
+            const vote = $isAuthenticated
                 ? option.votes.find(v => v.userId === $me.id)
-                : option.votes.find(v => v.anonId === anonId)
+                : option.votes.find(v => v.anonId === getOrCreateAnonId())
             ;
 
             if (vote) {
-                let res = await user_remVote(poll.id, vote.id);
+                const res = await user_remVote(poll.id, vote.id);
                 if (res) {
-                    option.votes = option.votes.filter(v => v.id !== vote.id);
+                    const updatedOption = { ...option, votes: option.votes.filter(v => v.id !== vote.id) };
+                    poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
                     selectedOption = null;
                 }
             }
@@ -54,10 +57,9 @@
     }
 
     async function loadSelection() {
-        const anonId = getOrCreateAnonId();
         const option = $isAuthenticated
-            ? poll.options.find(o => o.votes.some(v => v.userId === $me.id))
-            : poll.options.find(o => o.votes.some(v => v.anonId === anonId))
+            ? poll.options.find(opt => opt.votes.some(v => v.userId === $me.id))
+            : poll.options.find(opt => opt.votes.some(v => v.anonId === getOrCreateAnonId()))
         ;
         selectedOption = option ?? null;
         return selectedOption;

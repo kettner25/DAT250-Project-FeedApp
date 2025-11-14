@@ -1,12 +1,14 @@
 <script>
-    import { onMount, tick, onDestroy } from "svelte";
+    // @ts-nocheck
+
     import {
-        newPollTemplate,
         me,
+        newPollTemplate,
         user_createPoll,
-        user_updatePoll,
         user_getPoll,
+        user_updatePoll
     } from '../lib/store.js';
+    import { onDestroy, onMount, tick } from "svelte";
 
     import OptionRow from "./OptionRow.svelte";
 

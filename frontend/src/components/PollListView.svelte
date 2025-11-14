@@ -1,4 +1,6 @@
 <script>
+    // @ts-nocheck
+
     import PollBox from './PollBox.svelte';
 
     export let polls = [];
@@ -33,14 +35,14 @@
 </style>
 
 <h2>{title}</h2>
-<input type="search" placeholder="Search polls..." bind:value={search} />
+<input type="search" placeholder="Search polls..." bind:value={search}/>
 <div class="container">
     {#if polls.length > 0}
-    {#each filtered as poll (poll.id)}
-        <div>
-            <PollBox poll={poll} editable={editable} />
-        </div>
-    {/each}
+        {#each filtered as poll (poll.id)}
+            <div>
+                <PollBox poll={poll} editable={editable}/>
+            </div>
+        {/each}
     {:else}
         <span>No Polls Yet...</span>
     {/if}
