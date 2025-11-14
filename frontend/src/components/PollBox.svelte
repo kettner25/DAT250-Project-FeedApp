@@ -6,10 +6,11 @@
         pollToEdit,
         user_castVote,
         user_deletePoll,
-        user_remVote
+        user_remVote,
+        navigate,
+        refresh
     } from '../lib/store.js';
     import { getOrCreateAnonId, isAuthenticated } from '../lib/auth.js';
-    import { onMount} from "svelte";
 
     import OptionRow from "./OptionRow.svelte";
 
@@ -18,61 +19,102 @@
 
     let selectedOption = null;
 
+    // todo nicer approach without calling refresh()
+    $: if (poll && poll.options) {
+        const anonId = getOrCreateAnonId();
+
+        if ($isAuthenticated) {
+            selectedOption =
+                poll.options.find(opt =>
+                    (opt.votes ?? []).some(v => v.userId === $me.id)
+                ) ?? null;
+        } else {
+            selectedOption =
+                poll.options.find(opt =>
+                    (opt.votes ?? []).some(v => v.anonId === anonId)
+                ) ?? null;
+        }
+    } else {
+        selectedOption = null;
+    }
+
     async function vote(option) {
-        if (selectedOption === null) {
-            // vote
+        const anonId = $isAuthenticated ? null : getOrCreateAnonId();
+        const currentSelection = selectedOption;
+
+        if (!currentSelection) {
+            // 1) No vote yet → create a vote
 
             let vote = {
                 publishedAt: new Date().toISOString(),
                 option: option,
-                user: isAuthenticated ? $me : null,
-                userId: null,
-                anonId: null,
-            }
+                user: $isAuthenticated ? $me : null,
+                userId: $isAuthenticated ? $me.id : null,
+                anonId: $isAuthenticated ? null : anonId,
+            };
 
             vote = await user_castVote(poll.id, vote);
             if (vote) {
-                const updatedOption = { ...option, votes: [...option.votes, vote] };
+                const updatedOption = { ...option, votes: [...(option.votes ?? []), vote] };
                 poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
-                selectedOption = updatedOption;
             }
         }
-        else if (selectedOption === option) {
-            // unvote
+        else if (currentSelection.id === option.id) {
+            // 2) Click same option → remove vote (unvote)
 
-            const vote = $isAuthenticated
-                ? option.votes.find(v => v.userId === $me.id)
-                : option.votes.find(v => v.anonId === getOrCreateAnonId())
-            ;
+            const voteToRemove = $isAuthenticated
+                ? option.votes?.find(v => v.userId === $me.id)
+                : option.votes?.find(v => v.anonId === anonId);
 
-            if (vote) {
-                const res = await user_remVote(poll.id, vote.id);
-                if (res) {
-                    const updatedOption = { ...option, votes: option.votes.filter(v => v.id !== vote.id) };
-                    poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
-                    selectedOption = null;
-                }
+            if (!voteToRemove) return;
+
+            const res = await user_remVote(poll.id, voteToRemove.id);
+            if (res) {
+                const updatedOption = { ...option, votes: (option.votes ?? []).filter(v => v.id !== voteToRemove.id) };
+                poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
             }
         }
-    }
+        else {
+            // 3) Click different option → move vote from old to new
 
-    async function loadSelection() {
-        const option = $isAuthenticated
-            ? poll.options.find(opt => opt.votes.some(v => v.userId === $me.id))
-            : poll.options.find(opt => opt.votes.some(v => v.anonId === getOrCreateAnonId()))
-        ;
-        selectedOption = option ?? null;
-        return selectedOption;
+            const oldOption = currentSelection;
+            const oldVote = $isAuthenticated
+                ? oldOption.votes?.find(v => v.userId === $me.id)
+                : oldOption.votes?.find(v => v.anonId === anonId);
+            if (!oldVote) return;
+
+            const removed = await user_remVote(poll.id, oldVote.id);
+            if (!removed) return;
+
+            const updatedOldOption = { ...oldOption, votes: (oldOption.votes ?? []).filter(v => v.id !== oldVote.id) };
+
+            let newVote = {
+                publishedAt: new Date().toISOString(),
+                option: option,
+                user: $isAuthenticated ? $me : null,
+                userId: $isAuthenticated ? $me.id : null,
+                anonId: $isAuthenticated ? null : anonId,
+            };
+
+            newVote = await user_castVote(poll.id, newVote);
+            if (!newVote) return;
+
+            const updatedNewOption = { ...option, votes: [...(option.votes ?? []), newVote] };
+
+            poll = { ...poll, options: poll.options.map(o => {
+                        if (o.id === updatedOldOption.id) return updatedOldOption;
+                        if (o.id === updatedNewOption.id) return updatedNewOption;
+                        return o;
+            })};
+        }
+
+        await refresh();
     }
 
     function edit() {
         pollToEdit.set(poll);
-        location.hash = "edit"
+        navigate("edit");
     }
-
-    onMount(async () => {
-        await loadSelection();
-    });
 </script>
 
 <style>

@@ -19,8 +19,7 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
-    private String anonId;
+    private String anonId;  // if marked unique then only one anonymous user can vote only on one poll
     private Instant publishedAt;
 
     @ManyToOne

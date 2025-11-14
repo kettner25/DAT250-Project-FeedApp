@@ -1,5 +1,5 @@
 // --- Imports ---
-import { get, writable } from "svelte/store";
+import { get, writable, derived } from "svelte/store";
 import { isAuthenticated } from './auth.js';
 import { apiFetch} from "./api.js"
 
@@ -23,15 +23,29 @@ export function navigate(to) {
 }
 
 // --- User from our DB ---
-export const me = writable(null);
+export const me = writable({
+    id: null,
+    keycloakId: null,
+    username: null,
+    email: null,
+    polls: [],
+    votes: [],
+});
 
 // --- Error ---
 export const errorStore = writable(null);
 
 // --- Polls ---
 export const allPolls = writable([]);
-export const myPolls = writable([]);
+export const myPolls = derived(
+    [allPolls, me, isAuthenticated],
+    ([$allPolls, $me, $isAuthenticated]) => {
+        if (!$isAuthenticated || !$me || !$me.polls || !Array.isArray($me.polls)) return [];
+        return $allPolls.filter(pa => $me.polls.some(pb => pa.id === pb.id));
+    }
+);
 export const newPollTemplate = writable({
+    id: null,
     question: "",
     publishedAt: "",
     validUntil: "",
@@ -48,15 +62,13 @@ function sortPollOptions(poll) {
 // ------- API calls -------
 
 export async function loadBootstrap() {
-    const [_me, _all, _my] = await Promise.all([
+    const [_me, _all] = await Promise.all([
         get(isAuthenticated) ? apiFetch("/me") : null,
         apiFetch("/polls"),
-        get(isAuthenticated) ? apiFetch("/me/polls") : []
     ]);
 
     if (_me) me.set(_me)
     if (_all) allPolls.set(_all.map(sortPollOptions));
-    if (_my) myPolls.set(_my.map(sortPollOptions));
 }
 
 export async function refresh() {
@@ -72,7 +84,6 @@ export async function user_createPoll(data) {
     if (created) {
         const sorted = sortPollOptions(created);
         allPolls.update(list => [sorted, ...list]);
-        myPolls.update(list => [sorted, ...list]);
         return sorted;
     } else {
         errorStore.set("Poll Creation Failed");
@@ -88,7 +99,6 @@ export async function user_updatePoll(pid, patch) {
     if (updated) {
         const sorted = sortPollOptions(updated);
         allPolls.update(list => list.map(p => (p.id === pid ? sorted : p)));
-        myPolls.update(list => list.map(p => (p.id === pid ? sorted : p)));
         return sorted;
     } else {
         errorStore.set("Poll Update Failed");
@@ -110,7 +120,6 @@ export async function user_deletePoll(pid) {
 
     if (deleted) {
         allPolls.update(list => list.filter(p => p.id !== pid));
-        myPolls.update(list => list.filter(p => p.id !== pid));
         return deleted
     } else {
         errorStore.set("Poll Deletion Failed");
