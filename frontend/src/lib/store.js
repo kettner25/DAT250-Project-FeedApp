@@ -1,12 +1,26 @@
-import { writable, get } from "svelte/store";
-import { isAuthenticated, profile } from './auth.js';
-import { apiFetch } from "./api.js"
+// --- Imports ---
+import { get, writable } from "svelte/store";
+import { isAuthenticated } from './auth.js';
+import { apiFetch} from "./api.js"
 
 // --- Routing ---
-// todo fix routing
-export const route = writable(location.hash.replace("#", "") || "home");
-function setRoute() { route.set(location.hash.replace("#", "") || "home") }
+const DEFAULT_ROUTE = "all-polls";
+function getRouteFromHash() {
+    const hash = window.location.hash.slice(1);
+    return hash || DEFAULT_ROUTE;
+}
+export const route = writable(getRouteFromHash());
+function setRoute() {
+    route.set(getRouteFromHash());
+}
 window.addEventListener("hashchange", setRoute);
+export function navigate(to) {
+    if (!to.startsWith("#")) {
+        window.location.hash = `#${to}`;
+    } else {
+        window.location.hash = to;
+    }
+}
 
 // --- User from our DB ---
 export const me = writable(null);
@@ -89,14 +103,6 @@ export async function user_getPoll(pid) {
     return sortPollOptions(poll)
 }
 
-export async function user_getPollVotes(pid, oid) {
-    const poll = await apiFetch(`/polls/${pid}`, {
-        method: "GET",
-    });
-
-    return poll.options.find(p => p.id === oid).votes;
-}
-
 export async function user_deletePoll(pid) {
     const deleted = await apiFetch(`/polls/${pid}`, {
         method: "DELETE"
@@ -113,42 +119,14 @@ export async function user_deletePoll(pid) {
 }
 
 export async function user_castVote(pid, vote) {
-    const castedVote = await apiFetch(`/polls/${pid}/votes`, {
+    return await apiFetch(`/polls/${pid}/votes`, {
         method: "POST",
         body: JSON.stringify(vote)
     });
-
-    return castedVote;
 }
 
 export async function user_remVote(pid, vid) {
-    const remVote = await apiFetch(`/polls/${pid}/votes/${vid}`, {
+    return await apiFetch(`/polls/${pid}/votes/${vid}`, {
         method: "DELETE"
     });
-
-    return remVote;
-}
-
-export async function user_getVotes() {
-    const votes = await apiFetch("/me/votes", {
-        method: "GET",
-    });
-    return votes;
-}
-
-export async function anonym_castVote(pid, vote) {
-    const castedVote = await apiFetch(`/polls/${pid}/votes`, {
-        method: "POST",
-        body: JSON.stringify(vote)
-    });
-
-    return castedVote;
-}
-
-export async function anonym_remVote(pid, vid) {
-    const remVote = await apiFetch(`/polls/${pid}/votes/${vid}`, {
-        method: "DELETE"
-    });
-
-    return remVote;
 }

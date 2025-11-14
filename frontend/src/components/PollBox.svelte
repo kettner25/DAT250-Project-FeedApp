@@ -2,13 +2,14 @@
     import {
         user_deletePoll,
         user_castVote,
-        user_getPollVotes,
-        user_getVotes,
         user_remVote,
         me,
         pollToEdit,
     } from '../lib/store.js';
+    import { onMount} from "svelte";
     import OptionRow from "./OptionRow.svelte";
+    import { isAuthenticated, getOrCreateAnonId } from '../lib/auth.js';
+
 
     // todo finish anonym voting
 
@@ -17,42 +18,59 @@
 
     let selectedOption = null;
 
-    async function voteAnonym(option) {
-
-    }
-
     async function vote(option) {
         if (selectedOption === null) {
+            // vote
+
             let vote = {
                 publishedAt: new Date().toISOString(),
                 option: option,
-                user: $me,
+                user: isAuthenticated ? $me : null,
             }
 
             vote = await user_castVote(poll.id, vote);
-            if (vote)
+            if (vote) {
+                option.votes.push(vote);
                 selectedOption = option;
+            }
         }
         else if (selectedOption === option) {
-            const userVotes = await user_getVotes();                                    // todo improve
-            const optionVotes = await user_getPollVotes(poll.id, option.id);    // todo improve
-            const vote = optionVotes.find(optionVote => userVotes.some(userVote => userVote.id === optionVote.id));
-            console.log(userVotes);
-            console.log(optionVotes);
-            console.log(vote);
+            // unvote
+
+            const anonId = getOrCreateAnonId();
+            let vote = $isAuthenticated
+                ? option.votes.find(v => v.userId === $me.id)
+                : option.votes.find(v => v.anonId === anonId)
+            ;
 
             if (vote) {
                 let res = await user_remVote(poll.id, vote.id);
-                if (res)
+                if (res) {
+                    option.votes = option.votes.filter(v => v.id !== vote.id);
                     selectedOption = null;
+                }
             }
         }
+    }
+
+    async function loadSelection() {
+        const anonId = getOrCreateAnonId();
+        const option = $isAuthenticated
+            ? poll.options.find(o => o.votes.some(v => v.userId === $me.id))
+            : poll.options.find(o => o.votes.some(v => v.anonId === anonId))
+        ;
+        selectedOption = option ?? null;
+        return selectedOption;
     }
 
     function edit() {
         pollToEdit.set(poll);
         location.hash = "edit"
     }
+
+    onMount(async () => {
+        await loadSelection();
+    });
 </script>
 
 <style>

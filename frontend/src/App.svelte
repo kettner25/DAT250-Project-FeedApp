@@ -1,6 +1,6 @@
 <script>
     import { onMount , onDestroy } from 'svelte';
-    import { isAuthenticated, profile } from './lib/auth';
+    import { isAuthenticated, profile, getOrCreateAnonId } from './lib/auth';
     import {
         route,
         myPolls,
@@ -21,11 +21,8 @@
     $: currentView = $route;
 
     onMount(async () => {
-        try {
-            await loadBootstrap();
-        } catch (e) {
-            console.error(e);
-        }
+        getOrCreateAnonId();
+        await loadBootstrap();
     });
 
     $: if ($errorStore) setTimeout(() => errorStore.set(null), 4000);

@@ -1,6 +1,7 @@
 package no.hvl.group17.feedapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,11 @@ public class Vote {
     @ToString.Exclude
     @JsonBackReference("user-votes")
     private User user;
+
+    @JsonProperty("userId")
+    public Integer getUserId() {
+        return user != null ? user.getId() : null;
+    }
 
     public Boolean Verify() {
         if ((anonId == null || anonId.isEmpty()) && user == null) return false;

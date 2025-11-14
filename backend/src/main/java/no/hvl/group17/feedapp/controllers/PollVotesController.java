@@ -24,6 +24,8 @@ public class PollVotesController {
             @RequestBody Vote vote,
             @CookieValue(value = "anonId", required = false) String anonId
     ) {
+        vote.setAnonId(anonId);
+
         if (!vote.Verify()) return null;
 
         int uid = jwt == null ? -1 : userService.getOrCreateFromJwt(jwt).getId();

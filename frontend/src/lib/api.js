@@ -1,3 +1,4 @@
+// --- Imports ---
 import { getToken } from './auth.js';
 
 // --- Config ---
@@ -23,5 +24,15 @@ export async function apiFetch(path, options = {}) {
         return null;
     }
 
-    return res.status === 204 ? undefined : res.json();
+    if (res.status === 204 || res.status === 205) {
+        return undefined;
+    }
+
+    const text = await res.text();
+
+    try {
+        return JSON.parse(text) ?? undefined;
+    } catch (_) {
+        return text ?? undefined;
+    }
 }
