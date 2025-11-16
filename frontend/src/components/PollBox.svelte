@@ -8,7 +8,8 @@
         deletePoll,
         remVote,
         navigate,
-        refresh
+        refresh,
+        getPollStats
     } from '../lib/store.js';
     import { getOrCreateAnonId, isAuthenticated } from '../lib/auth.js';
 
@@ -19,7 +20,6 @@
 
     let selectedOption = null;
 
-    // todo nicer approach without calling refresh()
     $: if (poll && poll.options) {
         const anonId = getOrCreateAnonId();
 
@@ -115,6 +115,13 @@
         pollToEdit.set(poll);
         navigate("edit");
     }
+
+    async function print() {
+        // redis
+        const result = await getPollStats(poll.id);
+        console.log(result);
+        alert(JSON.stringify(result, null, 2));
+    }
 </script>
 
 <style>
@@ -141,7 +148,7 @@
         border-radius: 1rem;
     }
 
-    .header {
+    .header, .footer {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -162,11 +169,15 @@
             </div>
         {/if}
     </div>
-    <div>
+    <div class="poll">
         {#each poll.options as opt (opt.caption)}
             <div class="row" class:selected-row={selectedOption && selectedOption.id === opt.id}>
                 <OptionRow option={opt} viewOnly={true} onVote={vote}/>
             </div>
         {/each}
+    </div>
+    <div class="footer">
+        <h3></h3>
+        <button type="button" title="Print" on:click={print}>Print</button>
     </div>
 </div>

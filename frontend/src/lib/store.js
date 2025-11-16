@@ -139,3 +139,9 @@ export async function remVote(pid, vid) {
         method: "DELETE"
     });
 }
+
+export async function getPollStats(pid) {
+    return await apiFetch(`/polls/${pid}/count`, {
+        method: "GET"
+    });
+}
