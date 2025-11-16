@@ -96,7 +96,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: group17/feedapp:latest
+    image: ${USER:-matejvvo}/feedapp:${TAG:-latest}
     container_name: feedapp
     ports:
       - "8080:8080"
