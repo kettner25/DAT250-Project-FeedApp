@@ -85,9 +85,11 @@ public class VoteService {
         var pollId = option.getPoll().getId();
         if (!pollId.equals(pid)) return null;
 
-        voteRepo.save(vote);
+        vote = voteRepo.save(vote);
 
-        rabbitTemplate.convertAndSend("vote-events", pollId);
+        rabbitTemplate.convertAndSend("vote-events", "vote-created:" + vote.getId());
+        rabbitTemplate.convertAndSend("vote-events", "vote-created-data:" + vote);
+        rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + pollId);
 
         return vote;
     }
@@ -101,7 +103,7 @@ public class VoteService {
      * @param vid Vote id
      * @return if proceeded correctly
      * */
-    @CacheEvict(value = "voteCounts", key = "#pid") // todo was #pollId
+    @CacheEvict(value = "voteCounts", key = "#pid")
     public Boolean deleteVote(int uid, String aid, int pid, int vid) {
         var vote = getVoteById(vid);
         if (vote == null) return false;

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.repositories.PollRepo;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class PollService {
 
     private final PollRepo pollRepo;
     private final UserService userService;
+    private final RabbitTemplate rabbitTemplate;
 
     /**
      * Get all polls
@@ -80,7 +82,12 @@ public class PollService {
 
         if (uid != poll.getUser().getId()) return null;
 
-        return pollRepo.save(poll);
+        poll = pollRepo.save(poll);
+
+        rabbitTemplate.convertAndSend("poll-events", "poll-created:" + poll.getId());
+        rabbitTemplate.convertAndSend("poll-events", "poll-created-data:" + poll);
+
+        return poll;
     }
 
     /**
@@ -109,7 +116,11 @@ public class PollService {
                         option2.setOrder(option.getOrder()), () ->
                         dbPoll.getOptions().add(option)));
 
-        return pollRepo.save(dbPoll);
+        poll = pollRepo.save(dbPoll);
+
+        rabbitTemplate.convertAndSend("poll-events", "poll-updated:" + poll.getId());
+
+        return poll;
     }
 
     /**
@@ -123,6 +134,8 @@ public class PollService {
         if (getPollById(pid).getUser().getId() != uid) return false;
 
         pollRepo.deleteById(pid);
+
+        rabbitTemplate.convertAndSend("poll-events", "poll-deleted:" + pid);
 
         return true;
     }

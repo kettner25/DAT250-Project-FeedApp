@@ -1,5 +1,6 @@
 package no.hvl.group17.feedapp.conf;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,11 +12,14 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
+    @Value("${server.host}") private String host;
+    @Value("${server.port}") private String port;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173", "https://my-frontend.app", "http://localhost:8080"));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080", "http://" + host + ":" + port));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);

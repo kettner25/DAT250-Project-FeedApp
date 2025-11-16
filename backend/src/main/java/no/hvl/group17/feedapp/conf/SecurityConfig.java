@@ -32,10 +32,16 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()   // Allow frontend UI
-                        .requestMatchers("/", "/index.html").permitAll()                                // Allow frontend UI
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                           // Allow frontend UI
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                           // Allow frontend UI
+                        .requestMatchers(           // Allow UI
+                                "/",
+                                "/index.html",
+                                "/static/**",
+                                "/build/**",
+                                "/css/**",
+                                "/js/**",
+                                "/favicon.ico",
+                                "/assets/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/polls",          // GET all polls
                                 "/api/polls/*",        // GET single poll
