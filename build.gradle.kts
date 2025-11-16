@@ -10,7 +10,7 @@ java {
 
 allprojects {
     group = "no.hvl.group17"
-    version = "0.0.1-SNAPSHOT"
+    version = "latest"
 
     repositories {
         mavenCentral()

@@ -1,13 +1,17 @@
-version: "3.8"
+version: "3.9"
 
 services:
-
   redis:
     image: redis:7
     container_name: feedapp-redis
+    command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
     restart: always
+    networks:
+      - feedapp-net
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -15,7 +19,11 @@ services:
     ports:
       - "5672:5672"   # AMQP
       - "15672:15672" # Web UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
     restart: always
+    networks:
+      - feedapp-net
 
   # App database
   postgres-app:
@@ -26,7 +34,7 @@ services:
       - POSTGRES_USER=feedapp
       - POSTGRES_PASSWORD=feedapp
     volumes:
-      - ./data/postgres-app:/var/lib/postgresql/data
+      - postgres-app-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -35,6 +43,8 @@ services:
       timeout: 5s
       retries: 20
     restart: always
+    networks:
+      - feedapp-net
 
   # Keycloak database
   postgres-keycloak:
@@ -45,7 +55,7 @@ services:
       - POSTGRES_USER=keycloak
       - POSTGRES_PASSWORD=keycloak
     volumes:
-      - ./data/postgres-keycloak:/var/lib/postgresql/data
+      - postgres-keycloak-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     healthcheck:
@@ -54,6 +64,8 @@ services:
       timeout: 5s
       retries: 20
     restart: always
+    networks:
+      - feedapp-net
 
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.2
@@ -76,5 +88,49 @@ services:
       postgres-keycloak:
         condition: service_healthy
     restart: always
+    networks:
+      - feedapp-net
 
-  # todo: feedapp container
+  # The app
+  feedapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: group17/feedapp:latest
+    container_name: feedapp
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - APP_DB_HOST=postgres-app
+      - APP_DB_PORT=5432
+      - KEYCLOAK_HOST=keycloak
+      - KEYCLOAK_PORT=8080
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672
+    depends_on:
+      postgres-app:
+        condition: service_healthy
+      postgres-keycloak:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    restart: always
+    networks:
+      - feedapp-net
+
+networks:
+  feedapp-net:
+    driver: bridge
+
+volumes:
+  postgres-app-data:
+  postgres-keycloak-data:
+  redis-data:
+  rabbitmq-data:
