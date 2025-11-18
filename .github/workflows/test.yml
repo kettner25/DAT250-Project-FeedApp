@@ -1,9 +1,9 @@
-name: cd
+name: test
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, matej ]
     paths:
       - 'backend/src/**'
       - 'frontend/src/**'

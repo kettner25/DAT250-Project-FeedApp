@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   feedapp-redis:
     image: redis:7
@@ -22,7 +20,7 @@ services:
     image: rabbitmq:3-management
     container_name: feedapp-rabbitmq
     ports:
-      - "5672:5672"   # AMQP
+      - "5672:5672"
       - "15672:15672" # Web UI
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity" ]
@@ -35,7 +33,6 @@ services:
     networks:
       - feedapp-net
 
-  # App database
   postgres-app:
     image: postgres:16
     container_name: feedapp-postgres-app-db
@@ -56,7 +53,6 @@ services:
     networks:
       - feedapp-net
 
-  # Keycloak database
   postgres-keycloak:
     image: postgres:16
     container_name: feedapp-postgres-keycloak-db
@@ -101,7 +97,6 @@ services:
     networks:
       - feedapp-net
 
-  # The app
   feedapp:
     build:
       context: .

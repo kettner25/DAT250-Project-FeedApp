@@ -1,4 +1,4 @@
-name: ci
+name: build-and-deploy
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
       TAG:  ${{ github.ref_name }}
     steps:
       - name: Checkout
@@ -66,6 +66,6 @@ jobs:
       - name: Build and push
         run: |
           export TAG=${TAG}
-          export USER=${USER}
+          export DOCKER_USER=${DOCKER_USER}
           docker compose build feedapp
           docker compose push feedapp
