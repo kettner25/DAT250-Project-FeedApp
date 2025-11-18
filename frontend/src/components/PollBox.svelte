@@ -8,7 +8,7 @@
         deletePoll,
         remVote,
         navigate,
-        refresh,
+        loadBootstrap,
         getPollStats
     } from '../lib/store.js';
     import { getOrCreateAnonId, isAuthenticated } from '../lib/auth.js';
@@ -20,6 +20,7 @@
 
     let selectedOption = null;
 
+    // todo
     $: if (poll && poll.options) {
         const anonId = getOrCreateAnonId();
 
@@ -108,7 +109,8 @@
             })};
         }
 
-        await refresh();
+        // todo fix this approach
+        await loadBootstrap();
     }
 
     function edit() {
@@ -135,17 +137,26 @@
 
     .row {
         margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .row:hover {
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
     .selected-row {
-        background-color: #aa0000;
+        background: linear-gradient(135deg, #1e78ff, #1f3b73);
+        color: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .box {
-        max-width: 20rem;
-        background: #aaaaaa;
-        padding: 1rem;
-        border-radius: 1rem;
+        max-width: 22rem;
+        background: #e8e8e8;
+        padding: 1.2rem;
+        border-radius: 1.2rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     .header, .footer {
@@ -155,7 +166,14 @@
     }
 
     button {
+        padding: 0.4rem 0.6rem;
         margin-left: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    button:hover {
+        background-color: rgba(0, 0, 0, 0.1);
     }
 </style>
 

@@ -8,9 +8,8 @@
         pollToEdit,
         errorStore,
         loadBootstrap,
-        refresh
     } from './lib/store.js';
-    import { onMount , onDestroy } from 'svelte';
+    import { onMount } from 'svelte';
     import { isAuthenticated, profile, getOrCreateAnonId } from './lib/auth';
 
     import PollListView from "./components/PollListView.svelte";
@@ -20,20 +19,13 @@
 
     $: currentView = $route;
 
-    let refreshInterval;
-    let unsubscribe;
+    // todo
+    $: if ($errorStore) setTimeout(() => errorStore.set(null), 4000);
 
     onMount(async () => {
         getOrCreateAnonId();
-        refreshInterval = setInterval(() => { refresh(); }, 60000);
-        unsubscribe = errorStore.subscribe((v) => { if (v) setTimeout(() => errorStore.set(null), 4000); });
         await loadBootstrap();
     });
-
-    onDestroy(async () => {
-        if (refreshInterval) clearInterval(refreshInterval);
-        if (unsubscribe) unsubscribe();
-    })
 </script>
 
 <style>

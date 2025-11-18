@@ -71,10 +71,6 @@ export async function loadBootstrap() {
     if (_all) allPolls.set(_all.map(sortPollOptions));
 }
 
-export async function refresh() {
-    await loadBootstrap();
-}
-
 export async function createPoll(data) {
     const created = await apiFetch(`/polls`, {
         method: "POST",

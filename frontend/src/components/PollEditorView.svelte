@@ -212,11 +212,11 @@
                         }
                     }}
             />
-            <button type="button" on:click={() => addOption(newOption)} disabled={newOption.trim() === "" || !unique}>
+            <button type="button" title="Add new option" on:click={() => addOption(newOption)} disabled={newOption.trim() === "" || !unique}>
                 Add new
             </button>
         </div>
     </div>
 
-    <button type="submit" disabled={!isPollValid}>Save Poll</button>
+    <button type="submit" title="Save poll" disabled={!isPollValid}>Save Poll</button>
 </form>
