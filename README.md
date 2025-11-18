@@ -33,3 +33,9 @@ To connect:
 ```bash
 redis-cli -p 6379
 ```
+
+## Develop frontend
+Run from project root:
+```bash
+npm --prefix frontend run de
+```

@@ -8,7 +8,7 @@
         deletePoll,
         remVote,
         navigate,
-        loadBootstrap,
+        updatePollInStore,
         getPollStats
     } from '../lib/store.js';
     import { getOrCreateAnonId, isAuthenticated } from '../lib/auth.js';
@@ -18,32 +18,14 @@
     export let poll;
     export let editable = false;
 
-    let selectedOption = null;
-
-    // todo
-    $: if (poll && poll.options) {
-        const anonId = getOrCreateAnonId();
-
-        if ($isAuthenticated) {
-            selectedOption =
-                poll.options.find(opt =>
-                    (opt.votes ?? []).some(v => v.userId === $me.id)
-                ) ?? null;
-        } else {
-            selectedOption =
-                poll.options.find(opt =>
-                    (opt.votes ?? []).some(v => v.anonId === anonId)
-                ) ?? null;
-        }
-    } else {
-        selectedOption = null;
-    }
+    $: selectedOption = poll?.options?.find(opt =>
+        (opt.votes ?? []).some(v => $isAuthenticated
+            ? v.userId === $me.id
+            : v.anonId === getOrCreateAnonId()
+    )) ?? null;
 
     async function vote(option) {
-        const anonId = $isAuthenticated ? null : getOrCreateAnonId();
-        const currentSelection = selectedOption;
-
-        if (!currentSelection) {
+        if (!selectedOption) {
             // 1) No vote yet → create a vote
 
             let vote = {
@@ -51,7 +33,7 @@
                 option: option,
                 user: $isAuthenticated ? $me : null,
                 userId: $isAuthenticated ? $me.id : null,
-                anonId: $isAuthenticated ? null : anonId,
+                anonId: $isAuthenticated ? null : getOrCreateAnonId(),
             };
 
             vote = await castVote(poll.id, vote);
@@ -60,14 +42,15 @@
                 poll = { ...poll, options: poll.options.map(o => o.id === option.id ? updatedOption : o) };
             }
         }
-        else if (currentSelection.id === option.id) {
+        else if (selectedOption.id === option.id) {
             // 2) Click same option → remove vote (unvote)
 
             const voteToRemove = $isAuthenticated
                 ? option.votes?.find(v => v.userId === $me.id)
-                : option.votes?.find(v => v.anonId === anonId);
+                : option.votes?.find(v => v.anonId === getOrCreateAnonId());
 
             if (!voteToRemove) return;
+
 
             const res = await remVote(poll.id, voteToRemove.id);
             if (res) {
@@ -78,10 +61,10 @@
         else {
             // 3) Click different option → move vote from old to new
 
-            const oldOption = currentSelection;
+            const oldOption = selectedOption;
             const oldVote = $isAuthenticated
                 ? oldOption.votes?.find(v => v.userId === $me.id)
-                : oldOption.votes?.find(v => v.anonId === anonId);
+                : oldOption.votes?.find(v => v.anonId === getOrCreateAnonId());
             if (!oldVote) return;
 
             const removed = await remVote(poll.id, oldVote.id);
@@ -94,7 +77,7 @@
                 option: option,
                 user: $isAuthenticated ? $me : null,
                 userId: $isAuthenticated ? $me.id : null,
-                anonId: $isAuthenticated ? null : anonId,
+                anonId: $isAuthenticated ? null : getOrCreateAnonId(),
             };
 
             newVote = await castVote(poll.id, newVote);
@@ -109,8 +92,7 @@
             })};
         }
 
-        // todo fix this approach
-        await loadBootstrap();
+        updatePollInStore(poll);
     }
 
     function edit() {

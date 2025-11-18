@@ -126,6 +126,7 @@
                 await createPoll(poll);
             } else {
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
+                poll = {...poll, user: $me}
                 await updatePoll(pollId, poll);
             }
         } catch (e) {

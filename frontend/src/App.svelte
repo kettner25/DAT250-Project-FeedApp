@@ -19,8 +19,8 @@
 
     $: currentView = $route;
 
-    // todo
-    $: if ($errorStore) setTimeout(() => errorStore.set(null), 4000);
+    const clearErrorLater = (e) => { if (e) return setTimeout(() => errorStore.set(null), 4000); };
+    $: _ = clearErrorLater($errorStore);
 
     onMount(async () => {
         getOrCreateAnonId();

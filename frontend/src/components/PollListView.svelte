@@ -11,6 +11,7 @@
     $: filtered = search.trim().toLowerCase()
         ? polls.filter(p => (p.question || '').toLowerCase().includes(search.trim().toLowerCase()))
         : polls;
+    $: sorted = filtered.sort((a, b) => a.id - b.id);
 </script>
 
 <style>
@@ -38,7 +39,7 @@
 <input type="search" placeholder="Search polls..." bind:value={search}/>
 <div class="container">
     {#if polls.length > 0}
-        {#each filtered as poll (poll.id)}
+        {#each sorted as poll (poll.id)}
             <div>
                 <PollBox poll={poll} editable={editable}/>
             </div>
