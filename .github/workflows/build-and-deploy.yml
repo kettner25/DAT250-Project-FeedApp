@@ -30,7 +30,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run all JUnit tests
-        run: ./gradlew test --info --stacktrace
+        run: ./gradlew clean test --info --stacktrace
 
       - name: Build JAR
         run: ./gradlew --no-daemon clean build -x test

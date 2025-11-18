@@ -24,7 +24,8 @@ public class UserServiceTests {
 
     @BeforeEach
     void setup() {
-        userRepository.deleteAll();
+        userRepository.deleteAllInBatch();
+
         userRepository.save(User.builder()
                 .keycloakId("1")
                 .username("alice")
