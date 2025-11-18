@@ -176,8 +176,10 @@
             </div>
         {/each}
     </div>
+    {#if ($isAuthenticated)}
     <div class="footer">
-        <h3></h3>
+        <span></span>
         <button type="button" title="Print" on:click={print}>Print</button>
     </div>
+    {/if}
 </div>
