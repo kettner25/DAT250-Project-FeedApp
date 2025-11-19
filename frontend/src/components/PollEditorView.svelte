@@ -126,6 +126,7 @@
                 await createPoll(poll);
             } else {
                 poll = {...poll, validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()};  // 1 month
+                poll = {...poll, user: $me}
                 await updatePoll(pollId, poll);
             }
         } catch (e) {
@@ -212,11 +213,11 @@
                         }
                     }}
             />
-            <button type="button" on:click={() => addOption(newOption)} disabled={newOption.trim() === "" || !unique}>
+            <button type="button" title="Add new option" on:click={() => addOption(newOption)} disabled={newOption.trim() === "" || !unique}>
                 Add new
             </button>
         </div>
     </div>
 
-    <button type="submit" disabled={!isPollValid}>Save Poll</button>
+    <button type="submit" title="Save poll" disabled={!isPollValid}>Save Poll</button>
 </form>

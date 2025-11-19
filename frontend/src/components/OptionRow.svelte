@@ -48,28 +48,30 @@
         gap: 1rem;
     }
 
-    .buttons {
+    button.option-row {
+        all: unset;
         display: flex;
-        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        cursor: pointer;
     }
 
     .caption {
-        width: 100%;
         min-width: 10rem;
     }
 
     .voteCnt {
-        width: 2rem;
+        min-width: 5rem;
     }
 </style>
 
 <div class="option-row">
     {#if viewOnly}
-        <span class="caption">{option.caption}</span>
-        <div class="buttons">
-            <span class="voteCnt">{votes}</span>
-            <button type="button" title="Vote" on:click={vote}>Vote</button>
-        </div>
+        <button class="option-row" type="button" title="Vote" on:click={vote}>
+            <span class="caption">{option.caption}</span>
+            <span class="voteCnt">{votes} {votes === 1 ? 'vote' : 'votes'}</span>
+        </button>
     {:else}
         <input
                 type="text"

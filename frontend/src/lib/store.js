@@ -1,6 +1,6 @@
 // --- Imports ---
 import { get, writable, derived } from "svelte/store";
-import { isAuthenticated } from './auth.js';
+import { isAuthenticated, profile } from './auth.js';
 import { apiFetch} from "./api.js"
 
 // --- Routing ---
@@ -23,14 +23,7 @@ export function navigate(to) {
 }
 
 // --- User from our DB ---
-export const me = writable({
-    id: null,
-    keycloakId: null,
-    username: null,
-    email: null,
-    polls: [],
-    votes: [],
-});
+export const me = writable(null);
 
 // --- Error ---
 export const errorStore = writable(null);
@@ -54,12 +47,20 @@ export const newPollTemplate = writable({
 });
 export const pollToEdit = writable(null);
 
+// --- Helpers ---
+
 function sortPollOptions(poll) {
     if (!poll || !Array.isArray(poll.options)) return poll;
     return { ...poll, options: [...poll.options].sort((a, b) => a.order - b.order) };
 }
 
-// ------- API calls -------
+export function updatePollInStore(updatedPoll) {
+    allPolls.update(list =>
+        list.map(p => p.id === updatedPoll.id ? updatedPoll : p)
+    );
+}
+
+// --- API calls ---
 
 export async function loadBootstrap() {
     const [_me, _all] = await Promise.all([
@@ -71,10 +72,6 @@ export async function loadBootstrap() {
     if (_all) allPolls.set(_all.map(sortPollOptions));
 }
 
-export async function refresh() {
-    await loadBootstrap();
-}
-
 export async function createPoll(data) {
     const created = await apiFetch(`/polls`, {
         method: "POST",
@@ -84,6 +81,8 @@ export async function createPoll(data) {
     if (created) {
         const sorted = sortPollOptions(created);
         allPolls.update(list => [sorted, ...list]);
+        if (get(isAuthenticated) && !get(profile).roles.includes("ADMIN"))
+            me.update(cur => ({ ...cur, polls: [...cur.polls , sorted]}));
         return sorted;
     } else {
         errorStore.set("Poll Creation Failed");

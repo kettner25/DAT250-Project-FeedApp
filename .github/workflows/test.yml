@@ -1,9 +1,9 @@
-name: cd
+name: test
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, matej ]
     paths:
       - 'backend/src/**'
       - 'frontend/src/**'
@@ -34,4 +34,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run all JUnit tests
-        run: ./gradlew test --info --stacktrace
+        run: ./gradlew clean test --info --stacktrace

@@ -2,6 +2,7 @@ package no.hvl.group17.feedapp.domain;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class PollTests {
     @Test
     void pollOk_returnsTrue() {

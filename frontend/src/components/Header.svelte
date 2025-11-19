@@ -24,10 +24,10 @@
     {#if $isAuthenticated}
         <span>{$profile?.username}</span>
         <span>{$profile?.email}</span>
-        <button on:click={logout}>Logout</button>
+        <button type="button" title="Logout" on:click={logout}>Logout</button>
     {:else}
         <span>Anonymous</span>
         <span>User</span>
-        <button on:click={() => login()}>Login</button>
+        <button type="button" title="Login" on:click={() => login()}>Login</button>
     {/if}
 </header>

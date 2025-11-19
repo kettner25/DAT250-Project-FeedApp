@@ -11,9 +11,11 @@ import no.hvl.group17.feedapp.repositories.UserRepo;
 import no.hvl.group17.feedapp.repositories.VoteRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -36,11 +38,14 @@ public class VoteServiceTests {
     @Autowired
     private VoteService voteService;
 
+    @MockitoBean
+    RabbitTemplate template;
+
     @BeforeEach
     void setup() {
-        voteRepository.deleteAll();
-        pollRepository.deleteAll();
-        userRepository.deleteAll();
+        voteRepository.deleteAllInBatch();
+        pollRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
 
         userRepository.save(User.builder()
                 .keycloakId("1")

@@ -8,9 +8,11 @@ import no.hvl.group17.feedapp.repositories.UserRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -29,10 +31,13 @@ public class PollServiceTests {
     @Autowired
     private PollService pollService;
 
+    @MockitoBean
+    RabbitTemplate template;
+
     @BeforeEach
     void setup() {
-        userRepository.deleteAll();
-        pollRepository.deleteAll();
+        pollRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
 
         userRepository.save(User.builder()
                 .keycloakId("1")
