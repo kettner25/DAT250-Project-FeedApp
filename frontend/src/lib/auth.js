@@ -70,11 +70,6 @@ export function getOrCreateAnonId() {
         .split("; ")
         .find(row => row.startsWith("anonId="));
 
-    if (existing)
-        return existing.split("=")[1];
-
-    const anonId = crypto.randomUUID();
-    document.cookie = `anonId=${anonId}; path=/; max-age=${60 * 60 * 24 * 30}`;
-
-    return anonId;
+    if (existing) return existing.split("=")[1];
+    else return createNewAnonId();
 }
