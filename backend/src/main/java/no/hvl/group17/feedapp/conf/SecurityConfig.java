@@ -41,6 +41,12 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/assets/**"
                         ).permitAll()
+                        .requestMatchers(       // Allow Docs
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/docs/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/polls",          // GET all polls
                                 "/api/polls/*",        // GET single poll

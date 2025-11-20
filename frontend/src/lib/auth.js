@@ -55,7 +55,7 @@ export function logout() {
 }
 
 export function getToken() {
-    return keycloak.token || '';
+    return keycloak.token ?? '';
 }
 
 // --- Cookies ---
