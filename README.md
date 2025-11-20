@@ -39,3 +39,6 @@ Run from project root:
 ```bash
 npm --prefix frontend run de
 ```
+
+## Docs
+- Swagger UI at <http://localhost:8080/docs>
