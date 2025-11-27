@@ -8,11 +8,10 @@ import no.hvl.group17.feedapp.services.UserService;
 import no.hvl.group17.feedapp.services.VoteService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/polls")
@@ -36,38 +35,58 @@ public class PollController {
     }
 
     /// Authenticated USER or ADMIN
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("")
-    public Poll createPoll(@AuthenticationPrincipal Jwt jwt, @RequestBody Poll poll) {
+    public Poll createPoll(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody Poll poll
+    ) {
         if (!poll.Verify()) return null;
 
-        int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (hasAdminRole(jwt))
+        int uid = userService.getByUsername(userDetails.getUsername()).getId();
+
+        // Wenn der eingeloggte User Admin ist, darf er Polls für andere User anlegen
+        if (userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             uid = poll.getUser().getId();
+        }
 
         return pollService.createPoll(uid, poll);
     }
 
     /// Authenticated USER or ADMIN
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PutMapping("/{pid}")
-    public Poll editPoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid, @RequestBody Poll poll) {
+    public Poll editPoll(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable int pid,
+            @RequestBody Poll poll
+    ) {
         if (!poll.Verify()) return null;
 
-        int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (hasAdminRole(jwt))
+        int uid = userService.getByUsername(userDetails.getUsername()).getId();
+
+        if (userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             uid = poll.getUser().getId();
+        }
 
         return pollService.editPoll(uid, pid, poll);
     }
 
     /// Authenticated USER or ADMIN
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping("/{pid}")
-    public Boolean deletePoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid) {
-        int uid = userService.getOrCreateFromJwt(jwt).getId();
-        if (hasAdminRole(jwt))
+    public Boolean deletePoll(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable int pid
+    ) {
+        int uid = userService.getByUsername(userDetails.getUsername()).getId();
+
+        if (userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             uid = pollService.getPollById(pid).getUser().getId();
+        }
 
         return pollService.deletePollById(uid, pid);
     }
@@ -76,14 +95,5 @@ public class PollController {
     @GetMapping("/{pid}/count")
     public List<OptionCount> getVoteCount(@PathVariable int pid) {
         return voteService.getVoteCountsByPoll(pid);
-    }
-
-    /// Private helper
-    private static boolean hasAdminRole(Jwt jwt) {
-        Object realmAccess = jwt.getClaim("realm_access");
-        if (!(realmAccess instanceof Map<?, ?> realm)) return false;
-        Object rolesObj = realm.get("roles");
-        if (!(rolesObj instanceof List<?> roles)) return false;
-        return roles.contains("ADMIN");
     }
 }

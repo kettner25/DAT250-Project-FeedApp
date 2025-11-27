@@ -8,17 +8,7 @@
         logout
     } from '../lib/auth.js';
 </script>
-
-<style>
-    header {
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid #dddddd;
-    }
-</style>
-
+...
 <header>
     <span>Feed App</span>
     {#if $isAuthenticated}

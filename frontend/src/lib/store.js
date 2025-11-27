@@ -1,19 +1,24 @@
-// --- Imports ---
+// src/lib/store.js
 import { get, writable, derived } from "svelte/store";
 import { isAuthenticated, profile } from './auth.js';
-import { apiFetch} from "./api.js"
+import { apiFetch } from "./api.js";
 
 // --- Routing ---
 const DEFAULT_ROUTE = "all-polls";
+
 function getRouteFromHash() {
     const hash = window.location.hash.slice(1);
     return hash || DEFAULT_ROUTE;
 }
+
 export const route = writable(getRouteFromHash());
+
 function setRoute() {
     route.set(getRouteFromHash());
 }
+
 window.addEventListener("hashchange", setRoute);
+
 export function navigate(to) {
     if (!to.startsWith("#")) {
         window.location.hash = `#${to}`;
@@ -30,6 +35,7 @@ export const errorStore = writable(null);
 
 // --- Polls ---
 export const allPolls = writable([]);
+
 export const myPolls = derived(
     [allPolls, me, isAuthenticated],
     ([$allPolls, $me, $isAuthenticated]) => {
@@ -37,6 +43,7 @@ export const myPolls = derived(
         return $allPolls.filter(pa => $me.polls.some(pb => pa.id === pb.id));
     }
 );
+
 export const newPollTemplate = writable({
     id: null,
     question: "",
@@ -45,10 +52,10 @@ export const newPollTemplate = writable({
     options: [],
     user: null,
 });
+
 export const pollToEdit = writable(null);
 
 // --- Helpers ---
-
 function sortPollOptions(poll) {
     if (!poll || !Array.isArray(poll.options)) return poll;
     return { ...poll, options: [...poll.options].sort((a, b) => a.order - b.order) };
@@ -68,7 +75,7 @@ export async function loadBootstrap() {
         apiFetch("/polls"),
     ]);
 
-    if (_me) me.set(_me)
+    if (_me) me.set(_me);
     if (_all) allPolls.set(_all.map(sortPollOptions));
 }
 
@@ -81,8 +88,14 @@ export async function createPoll(data) {
     if (created) {
         const sorted = sortPollOptions(created);
         allPolls.update(list => [sorted, ...list]);
-        if (get(isAuthenticated) && !get(profile).roles.includes("ADMIN"))
-            me.update(cur => ({ ...cur, polls: [...cur.polls , sorted]}));
+
+        if (get(isAuthenticated)) {
+            me.update(cur => {
+                if (!cur) return cur;
+                return { ...cur, polls: [...(cur.polls || []), sorted] };
+            });
+        }
+
         return sorted;
     } else {
         errorStore.set("Poll Creation Failed");
@@ -109,7 +122,7 @@ export async function getPoll(pid) {
         method: "GET",
     });
 
-    return sortPollOptions(poll)
+    return sortPollOptions(poll);
 }
 
 export async function deletePoll(pid) {
@@ -119,7 +132,7 @@ export async function deletePoll(pid) {
 
     if (deleted) {
         allPolls.update(list => list.filter(p => p.id !== pid));
-        return deleted
+        return deleted;
     } else {
         errorStore.set("Poll Deletion Failed");
         return false;

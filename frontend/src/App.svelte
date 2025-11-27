@@ -9,21 +9,33 @@
         errorStore,
         loadBootstrap,
     } from './lib/store.js';
+
     import { onMount } from 'svelte';
-    import { isAuthenticated, profile, getOrCreateAnonId } from './lib/auth';
+    import { isAuthenticated, profile, initAuth, getOrCreateAnonId } from './lib/auth.js';
 
     import PollListView from "./components/PollListView.svelte";
     import Header from "./components/Header.svelte";
     import Sidebar from "./components/Sidebar.svelte";
     import PollEditorView from "./components/PollEditorView.svelte";
 
+    // always reflect the current hash route
     $: currentView = $route;
 
-    const clearErrorLater = (e) => { if (e) return setTimeout(() => errorStore.set(null), 4000); };
+    // Auto-clear error messages
+    const clearErrorLater = (e) => {
+        if (e) return setTimeout(() => errorStore.set(null), 4000);
+    };
     $: _ = clearErrorLater($errorStore);
 
+    // App init
     onMount(async () => {
+        // Init JWT auth from localStorage
+        initAuth();
+
+        // Create anonymous cookie if needed
         getOrCreateAnonId();
+
+        // Load polls + "/me" if authenticated
         await loadBootstrap();
     });
 </script>
@@ -61,20 +73,25 @@
 <Header />
 
 <div class="layout">
-        <Sidebar view={currentView} />
+    <Sidebar view={currentView} />
+
     <div class="content">
+
         {#if currentView === "create" && $isAuthenticated}
             <PollEditorView pollId={null} title="Create a New Poll" />
+
         {:else if currentView === "edit" && $pollToEdit !== null && $isAuthenticated}
             <PollEditorView pollId={$pollToEdit.id} title="Edit this Poll" />
+
         {:else if currentView === "my-polls" && $isAuthenticated}
             <PollListView polls={$myPolls} title="My Polls" editable={true} />
+
         {:else if currentView === "all-polls"}
             <PollListView polls={$allPolls} title="All Polls" />
-        {:else if currentView === "admin" && $isAuthenticated && $profile?.roles?.includes("ADMIN")}
-            <PollListView polls={$allPolls} title="Admin Poll Tools" editable={true} />
+
         {:else}
             <PollListView polls={$allPolls} title="All Polls" />
         {/if}
+
     </div>
 </div>

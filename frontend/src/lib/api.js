@@ -1,17 +1,22 @@
-// --- Imports ---
+// src/lib/api.js
 import { getToken } from './auth.js';
 
-// --- Config ---
 const API_BASE = "http://localhost:8080/api";
 
-// --- Fetch helper ---
 export async function apiFetch(path, options = {}) {
     const token = getToken();
 
+    const baseHeaders = {
+        "Content-Type": "application/json",
+    };
+
+    if (token) {
+        baseHeaders["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_BASE}${path}`, {
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : "None",
+            ...baseHeaders,
             ...(options.headers || {})
         },
         credentials: "include",

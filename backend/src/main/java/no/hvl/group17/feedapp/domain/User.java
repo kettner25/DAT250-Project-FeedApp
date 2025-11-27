@@ -2,7 +2,6 @@ package no.hvl.group17.feedapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,17 +20,20 @@ public class User {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String keycloakId;
-    @Column(nullable = false, unique = true)
     private String username;
+
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(name = "password_hash")   // kein nullable = false !
+    private String passwordHash;
 
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference("user-polls")
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Poll> polls = new ArrayList<>();
+
     @Builder.Default
     @ToString.Exclude
     @JsonManagedReference("user-votes")
@@ -39,10 +41,8 @@ public class User {
     private List<Vote> votes = new ArrayList<>();
 
     public Boolean Verify() {
-        if (keycloakId == null || keycloakId.isEmpty()) return false;
-
         if (username == null || username.isEmpty()) return false;
-
-        return email != null && !email.isEmpty();
+        if (email == null || email.isEmpty()) return false;
+        return passwordHash != null && !passwordHash.isEmpty();
     }
 }

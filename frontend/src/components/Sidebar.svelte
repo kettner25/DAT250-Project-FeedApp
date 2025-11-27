@@ -1,6 +1,5 @@
 <script>
     // @ts-nocheck
-
     import { isAuthenticated, profile } from '../lib/auth';
     import { navigate } from '../lib/store';
 
@@ -25,12 +24,33 @@
 
 <nav>
     <span>Feed App</span>
-    <button type="button" title="View All Polls" class:selected={view === "all-polls"} on:click={() => navigate("all-polls")}>All Polls</button>
+
+    <button
+        type="button"
+        title="View All Polls"
+        class:selected={view === "all-polls"}
+        on:click={() => navigate("all-polls")}
+    >
+        All Polls
+    </button>
+
     {#if $isAuthenticated}
-        <button type="button" title="View Only My Polls" class:selected={view === "my-polls"} on:click={() => navigate("my-polls")}>My Polls</button>
-        <button type="button" title="Create A New Poll" class:selected={view === "create"} on:click={() => navigate("create")}>Create New Poll</button>
-    {/if}
-    {#if $isAuthenticated && $profile?.roles?.includes("ADMIN")}
-        <button type="button" title="Administration View" class:selected={view === "admin"} on:click={() => navigate("admin")}>Admin</button>
+        <button
+            type="button"
+            title="View Only My Polls"
+            class:selected={view === "my-polls"}
+            on:click={() => navigate("my-polls")}
+        >
+            My Polls
+        </button>
+
+        <button
+            type="button"
+            title="Create A New Poll"
+            class:selected={view === "create"}
+            on:click={() => navigate("create")}
+        >
+            Create New Poll
+        </button>
     {/if}
 </nav>

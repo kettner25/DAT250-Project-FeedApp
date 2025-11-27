@@ -1,0 +1,56 @@
+"filename", "language", "Markdown", "Batch", "Docker", "YAML", "JavaScript", "PostCSS", "Svelte", "Java Properties", "HTML", "XML", "JSON", "Java", "JSON with Comments", "comment", "blank", "total"
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\.github\workflows\build-and-deploy.yml", "YAML", 0, 0, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 72
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\.github\workflows\test.yml", "YAML", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 38
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\Dockerfile", "Docker", 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 31
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\README.md", "Markdown", 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 42
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\SwDesign\Database_scheme.md", "Markdown", 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 32
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\SwDesign\REST_API_Design.md", "Markdown", 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 27
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\FeedAppApplication.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 5, 15
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\CorsConfig.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 9, 33
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\RabbitMQConfig.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 5, 20
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\RedisConfig.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 8, 33
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\SecurityConfig.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 7, 30
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\AuthController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 16, 73
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\MeController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 0, 8, 42
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\PollController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 74, 0, 7, 19, 100
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\PollVotesController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0, 2, 10, 53
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\UserController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 4, 10, 48
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Option.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 0, 0, 11, 48
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Poll.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 12, 54
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\User.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 11, 49
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Vote.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 10, 46
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\models\OptionCount.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 4, 14
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\PollRepo.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 5, 16
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\UserRepo.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 7, 21
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\VoteRepo.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 7, 21
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\security\JwtAuthFilter.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 17, 64
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\security\JwtUtil.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 0, 0, 12, 51
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\PollService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 0, 45, 31, 143
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\UserService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 22, 84
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\VoteService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 28, 29, 138
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\resources\application.properties", "Java Properties", 0, 0, 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 6, 8, 40
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\test\resources\application-test.properties", "Java Properties", 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 5, 16
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\docker-compose.yml", "YAML", 0, 0, 0, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 7, 80
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 1, 14
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\jsconfig.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 1, 17
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\package-lock.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1347, 0, 0, 0, 1, 1348
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\package.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 0, 1, 20
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\public\favicon.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 5
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\public\silent-check-sso.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 7
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\App.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 23, 98
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\app.css", "PostCSS", 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 5, 30
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\Header.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 2, 24
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\OptionRow.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 87, 0, 0, 0, 0, 0, 0, 0, 16, 103
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollBox.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 0, 0, 32, 186
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollEditorView.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 188, 0, 0, 0, 0, 0, 0, 0, 36, 224
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollListView.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 8, 51
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\Sidebar.svelte", "Svelte", 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 8, 57
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\api.js", "JavaScript", 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10, 44
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\auth.js", "JavaScript", 0, 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 0, 0, 14, 27, 158
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\store.js", "JavaScript", 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 0, 0, 0, 7, 31, 160
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\main.js", "JavaScript", 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 13
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\svelte.config.js", "JavaScript", 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 9
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\vite.config.js", "JavaScript", 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 8
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\gradle\wrapper\gradle-wrapper.properties", "Java Properties", 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 1, 8
+"c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\gradlew.bat", "Batch", 0, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 22, 95
+"Total", "-", 86, 41, 22, 148, 292, 25, 618, 44, 19, 1, 1366, 835, 16, 168, 572, 4253

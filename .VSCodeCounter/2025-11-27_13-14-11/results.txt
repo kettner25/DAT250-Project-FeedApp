@@ -1,0 +1,125 @@
+Date : 2025-11-27 13:14:11
+Directory : c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp
+Total : 55 files,  5937 codes, 168 comments, 573 blanks, all 6678 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          3 |      3,790 |          0 |          3 |      3,793 |
+| Java               |         23 |        835 |         86 |        275 |      1,196 |
+| Svelte             |          7 |        618 |          0 |        125 |        743 |
+| JavaScript         |          6 |        292 |         26 |         74 |        392 |
+| YAML               |          3 |        148 |         14 |         28 |        190 |
+| Markdown           |          3 |         86 |          0 |         15 |        101 |
+| Java Properties    |          3 |         44 |          6 |         14 |         64 |
+| Batch              |          1 |         41 |         32 |         22 |         95 |
+| PostCSS            |          1 |         25 |          0 |          5 |         30 |
+| Docker             |          1 |         22 |          0 |          9 |         31 |
+| HTML               |          2 |         19 |          0 |          2 |         21 |
+| JSON with Comments |          1 |         16 |          0 |          1 |         17 |
+| XML                |          1 |          1 |          4 |          0 |          5 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                        | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                           |         55 |      5,937 |        168 |        573 |      6,678 |
+| . (Files)                                                                                                                                   |          4 |        157 |         46 |         45 |        248 |
+| .github                                                                                                                                     |          2 |         89 |          0 |         21 |        110 |
+| .github\workflows                                                                                                                           |          2 |         89 |          0 |         21 |        110 |
+| SwDesign                                                                                                                                    |          2 |         51 |          0 |          8 |         59 |
+| backend                                                                                                                                     |         25 |        872 |         92 |        288 |      1,252 |
+| backend\src                                                                                                                                 |         25 |        872 |         92 |        288 |      1,252 |
+| backend\src\main                                                                                                                            |         24 |        861 |         92 |        283 |      1,236 |
+| backend\src\main\java                                                                                                                       |         23 |        835 |         86 |        275 |      1,196 |
+| backend\src\main\java\no                                                                                                                    |         23 |        835 |         86 |        275 |      1,196 |
+| backend\src\main\java\no\hvl                                                                                                                |         23 |        835 |         86 |        275 |      1,196 |
+| backend\src\main\java\no\hvl\group17                                                                                                        |         23 |        835 |         86 |        275 |      1,196 |
+| backend\src\main\java\no\hvl\group17\feedapp                                                                                                |         23 |        835 |         86 |        275 |      1,196 |
+| backend\src\main\java\no\hvl\group17\feedapp (Files)                                                                                        |          1 |         10 |          0 |          5 |         15 |
+| backend\src\main\java\no\hvl\group17\feedapp\conf                                                                                           |          4 |         87 |          0 |         29 |        116 |
+| backend\src\main\java\no\hvl\group17\feedapp\controllers                                                                                    |          5 |        240 |         13 |         63 |        316 |
+| backend\src\main\java\no\hvl\group17\feedapp\domain                                                                                         |          4 |        153 |          0 |         44 |        197 |
+| backend\src\main\java\no\hvl\group17\feedapp\models                                                                                         |          1 |         10 |          0 |          4 |         14 |
+| backend\src\main\java\no\hvl\group17\feedapp\repositories                                                                                   |          3 |         39 |          0 |         19 |         58 |
+| backend\src\main\java\no\hvl\group17\feedapp\security                                                                                       |          2 |         86 |          0 |         29 |        115 |
+| backend\src\main\java\no\hvl\group17\feedapp\services                                                                                       |          3 |        210 |         73 |         82 |        365 |
+| backend\src\main\resources                                                                                                                  |          1 |         26 |          6 |          8 |         40 |
+| backend\src\test                                                                                                                            |          1 |         11 |          0 |          5 |         16 |
+| backend\src\test\resources                                                                                                                  |          1 |         11 |          0 |          5 |         16 |
+| frontend                                                                                                                                    |         20 |      2,337 |         30 |        209 |      2,576 |
+| frontend (Files)                                                                                                                            |          6 |      1,404 |          4 |          8 |      1,416 |
+| frontend\public                                                                                                                             |          2 |          7 |          4 |          1 |         12 |
+| frontend\src                                                                                                                                |         12 |        926 |         22 |        200 |      1,148 |
+| frontend\src (Files)                                                                                                                        |          3 |        111 |          0 |         30 |        141 |
+| frontend\src\components                                                                                                                     |          6 |        543 |          0 |        102 |        645 |
+| frontend\src\lib                                                                                                                            |          3 |        272 |         22 |         68 |        362 |
+| gradle                                                                                                                                      |          1 |          7 |          0 |          1 |          8 |
+| gradle\wrapper                                                                                                                              |          1 |          7 |          0 |          1 |          8 |
+| keycloak                                                                                                                                    |          1 |      2,424 |          0 |          1 |      2,425 |
+| keycloak\realms                                                                                                                             |          1 |      2,424 |          0 |          1 |      2,425 |
++---------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                                                    | language           | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\.github\workflows\build-and-deploy.yml                                            | YAML               |         58 |          0 |         14 |         72 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\.github\workflows\test.yml                                                        | YAML               |         31 |          0 |          7 |         38 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\Dockerfile                                                                        | Docker             |         22 |          0 |          9 |         31 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\README.md                                                                         | Markdown           |         35 |          0 |          7 |         42 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\SwDesign\Database_scheme.md                                                       | Markdown           |         28 |          0 |          4 |         32 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\SwDesign\REST_API_Design.md                                                       | Markdown           |         23 |          0 |          4 |         27 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\FeedAppApplication.java              | Java               |         10 |          0 |          5 |         15 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\CorsConfig.java                 | Java               |         24 |          0 |          9 |         33 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\RabbitMQConfig.java             | Java               |         15 |          0 |          5 |         20 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\RedisConfig.java                | Java               |         25 |          0 |          8 |         33 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\conf\SecurityConfig.java             | Java               |         23 |          0 |          7 |         30 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\AuthController.java      | Java               |         57 |          0 |         16 |         73 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\MeController.java        | Java               |         34 |          0 |          8 |         42 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\PollController.java      | Java               |         74 |          7 |         19 |        100 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\PollVotesController.java | Java               |         41 |          2 |         10 |         53 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\controllers\UserController.java      | Java               |         34 |          4 |         10 |         48 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Option.java                   | Java               |         37 |          0 |         11 |         48 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Poll.java                     | Java               |         42 |          0 |         12 |         54 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\User.java                     | Java               |         38 |          0 |         11 |         49 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\domain\Vote.java                     | Java               |         36 |          0 |         10 |         46 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\models\OptionCount.java              | Java               |         10 |          0 |          4 |         14 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\PollRepo.java           | Java               |         11 |          0 |          5 |         16 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\UserRepo.java           | Java               |         14 |          0 |          7 |         21 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\repositories\VoteRepo.java           | Java               |         14 |          0 |          7 |         21 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\security\JwtAuthFilter.java          | Java               |         47 |          0 |         17 |         64 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\security\JwtUtil.java                | Java               |         39 |          0 |         12 |         51 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\PollService.java            | Java               |         67 |         45 |         31 |        143 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\UserService.java            | Java               |         62 |          0 |         22 |         84 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\java\no\hvl\group17\feedapp\services\VoteService.java            | Java               |         81 |         28 |         29 |        138 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\main\resources\application.properties                                 | Java Properties    |         26 |          6 |          8 |         40 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\backend\src\test\resources\application-test.properties                            | Java Properties    |         11 |          0 |          5 |         16 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\docker-compose.yml                                                                | YAML               |         59 |         14 |          7 |         80 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\index.html                                                               | HTML               |         13 |          0 |          1 |         14 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\jsconfig.json                                                            | JSON with Comments |         16 |          0 |          1 |         17 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\package-lock.json                                                        | JSON               |      1,347 |          0 |          1 |      1,348 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\package.json                                                             | JSON               |         19 |          0 |          1 |         20 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\public\favicon.svg                                                       | XML                |          1 |          4 |          0 |          5 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\public\silent-check-sso.html                                             | HTML               |          6 |          0 |          1 |          7 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\App.svelte                                                           | Svelte             |         75 |          0 |         23 |         98 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\app.css                                                              | PostCSS            |         25 |          0 |          5 |         30 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\Header.svelte                                             | Svelte             |         22 |          0 |          2 |         24 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\OptionRow.svelte                                          | Svelte             |         87 |          0 |         16 |        103 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollBox.svelte                                            | Svelte             |        154 |          0 |         32 |        186 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollEditorView.svelte                                     | Svelte             |        188 |          0 |         36 |        224 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\PollListView.svelte                                       | Svelte             |         43 |          0 |          8 |         51 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\components\Sidebar.svelte                                            | Svelte             |         49 |          0 |          8 |         57 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\api.js                                                           | JavaScript         |         33 |          1 |         10 |         44 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\auth.js                                                          | JavaScript         |        117 |         14 |         27 |        158 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\lib\store.js                                                         | JavaScript         |        122 |          7 |         31 |        160 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\src\main.js                                                              | JavaScript         |         11 |          0 |          2 |         13 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\svelte.config.js                                                         | JavaScript         |          4 |          3 |          2 |          9 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\frontend\vite.config.js                                                           | JavaScript         |          5 |          1 |          2 |          8 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\gradle\wrapper\gradle-wrapper.properties                                          | Java Properties    |          7 |          0 |          1 |          8 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\gradlew.bat                                                                       | Batch              |         41 |         32 |         22 |         95 |
+| c:\Users\Matthias\Documents\GitHub\DAT250-Project-FeedApp\keycloak\realms\feedapp-realm.json                                                | JSON               |      2,424 |          0 |          1 |      2,425 |
+| Total                                                                                                                                       |                    |      5,937 |        168 |        573 |      6,678 |
++---------------------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
