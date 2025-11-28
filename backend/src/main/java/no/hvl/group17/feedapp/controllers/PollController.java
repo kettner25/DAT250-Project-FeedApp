@@ -58,7 +58,7 @@ public class PollController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/{pid}")
     public ResponseEntity<Poll> editPoll(@AuthenticationPrincipal Jwt jwt, @PathVariable int pid, @RequestBody Poll poll) {
-        if (!poll.Verify()) return null;
+        if (!poll.Verify()) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         int uid = userService.getOrCreateFromJwt(jwt).getId();
         if (hasAdminRole(jwt))
