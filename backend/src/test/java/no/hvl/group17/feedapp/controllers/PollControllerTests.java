@@ -6,7 +6,6 @@ import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.repositories.PollRepo;
 import no.hvl.group17.feedapp.repositories.UserRepo;
-import no.hvl.group17.feedapp.TestMockingConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
