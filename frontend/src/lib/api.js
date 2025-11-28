@@ -24,15 +24,15 @@ export async function apiFetch(path, options = {}) {
         return null;
     }
 
-    if (res.status === 204 || res.status === 205) {
-        return undefined;
+    if (res.status === 200 || res.status === 201) {
+        const text = await res.text();
+
+        try {
+            return JSON.parse(text) ?? undefined;
+        } catch (_) {
+            return text ?? undefined;
+        }
     }
 
-    const text = await res.text();
-
-    try {
-        return JSON.parse(text) ?? undefined;
-    } catch (_) {
-        return text ?? undefined;
-    }
+    return undefined;
 }
