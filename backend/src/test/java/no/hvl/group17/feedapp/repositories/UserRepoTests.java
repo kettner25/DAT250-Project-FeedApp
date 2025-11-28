@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -13,9 +14,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @ActiveProfiles("test")
-@Transactional
+@DataJpaTest
 public class UserRepoTests {
 
     @Autowired
@@ -23,6 +23,7 @@ public class UserRepoTests {
 
     @BeforeEach
     void setup() {
+        userRepository.deleteAll();
         userRepository.save(User.builder()
                 .keycloakId("1")
                 .username("alice")
@@ -33,11 +34,6 @@ public class UserRepoTests {
                 .username("bob")
                 .email("bob@mail.com")
                 .build());
-    }
-
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
     }
 
     @Test
