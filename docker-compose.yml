@@ -21,7 +21,7 @@ services:
     container_name: feedapp-rabbitmq
     ports:
       - "5672:5672"
-      - "15672:15672" # Web UI
+      - "15672:15672"  # Web UI
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity" ]
       interval: 5s

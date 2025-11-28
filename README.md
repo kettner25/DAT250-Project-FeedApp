@@ -4,7 +4,10 @@
 - Lubos Kettner & Matej Volkmer & Matthias Worz 
 - HVL DAT250 Project
 - Latest version
-- DockerHub Image: <>
+- DockerHub Image: <https://hub.docker.com/r/kettnlub/feedapp>
+```bash
+docker pull kettnlub/feedapp:v1.2.0
+```
 
 ## Running
 1. Clone the repository
