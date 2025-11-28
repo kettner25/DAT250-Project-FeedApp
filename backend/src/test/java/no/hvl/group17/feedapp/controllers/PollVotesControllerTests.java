@@ -1,5 +1,7 @@
 package no.hvl.group17.feedapp.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import no.hvl.group17.feedapp.domain.Option;
 import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
@@ -14,19 +16,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Disabled("Temporarily disabled until AUTH is ready")
-// todo fix tests
 public class PollVotesControllerTests {
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +43,29 @@ public class PollVotesControllerTests {
 
     @Autowired
     private VoteRepo voteRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private Jwt createJwtUser() {
+        return Jwt.withTokenValue("mock-token")
+                .header("alg", "none")
+                .claim("sub", "1")
+                .claim("preferred_username", "john.doe")
+                .claim("email", "john.doe@mail.com")
+                .claim("roles", List.of("USER"))
+                .build();
+    }
+
+    private Jwt createJwtSecUser() {
+        return Jwt.withTokenValue("mock-token")
+                .header("alg", "none")
+                .claim("sub", "1adasdsa")
+                .claim("preferred_username", "john1.doe")
+                .claim("email", "john1.doe@mail.com")
+                .claim("roles", List.of("USER"))
+                .build();
+    }
 
     @BeforeEach
     void setup() {
@@ -71,24 +98,43 @@ public class PollVotesControllerTests {
 
     @Test
     void vote_withoutAuth_allowed() throws Exception {
-        mockMvc.perform(post("/polls/1/votes")
+        var user = userRepository.findAll().getFirst();
+        var option = pollRepository.findAll().get(0).getOptions().get(1);
+        var pid = pollRepository.findAll().get(0).getId();
+
+        Jwt jwt = createJwtUser();
+
+        mockMvc.perform(post("/api/polls/"+ pid +"/votes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"user\":{\"id\": 1}, \"option\":{\"id\": 2}}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                        .content("{\"user\":"+objectMapper.writeValueAsString(user)+", " +
+                                "\"option\":"+objectMapper.writeValueAsString(option)+"}," +
+                                "\"publishedAt\":"+objectMapper.writeValueAsString(Instant.now()))
+                        .with(jwt().jwt(jwt)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(user.getId()));
     }
 
     @Test
     @WithMockUser(username = "1", roles = "USER")
     void unvote_asOwner_allowed() throws Exception {
-        mockMvc.perform(delete("/polls/1/votes/1"))
-                .andExpect(status().isOk());
+        Jwt jwt = createJwtUser();
+
+        var pid = pollRepository.findAll().get(0).getId();
+        var vid = voteRepository.findAll().get(0).getId();
+
+        mockMvc.perform(delete("/api/polls/"+pid+"/votes/"+vid).with(jwt().jwt(jwt)))
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @WithMockUser(username = "2", roles = "USER")
     void unvote_asOtherUser_forbidden() throws Exception {
-        mockMvc.perform(delete("/polls/1/votes/1"))
-                .andExpect(status().isForbidden());
+        Jwt jwt = createJwtSecUser();
+
+        var pid = pollRepository.findAll().get(0).getId();
+        var vid = voteRepository.findAll().get(0).getId();
+
+        mockMvc.perform(delete("/api/polls/"+pid+"/votes/"+vid).with(jwt().jwt(jwt)))
+                .andExpect(status().isBadRequest());
     }
 }
