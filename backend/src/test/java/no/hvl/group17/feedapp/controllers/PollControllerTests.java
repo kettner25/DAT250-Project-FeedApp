@@ -6,22 +6,24 @@ import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.repositories.PollRepo;
 import no.hvl.group17.feedapp.repositories.UserRepo;
+import no.hvl.group17.feedapp.TestMockingConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -47,6 +49,9 @@ public class PollControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    RabbitTemplate template;
 
     private Jwt createJwtUser() {
         return Jwt.withTokenValue("mock-token")

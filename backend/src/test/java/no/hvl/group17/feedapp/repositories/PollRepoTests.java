@@ -28,6 +28,9 @@ public class PollRepoTests {
 
     @BeforeEach
     void setup() {
+        pollRepository.deleteAll();
+        userRepository.deleteAll();
+
         userRepository.save(User.builder()
                 .keycloakId("1")
                 .username("alice")
@@ -46,12 +49,6 @@ public class PollRepoTests {
                 .build();
         poll.linkOptions();
         pollRepository.save(poll);
-    }
-
-    @AfterEach
-    void tearDown() {
-        pollRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
