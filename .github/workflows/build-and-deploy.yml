@@ -36,7 +36,7 @@ jobs:
 #    needs: test
     runs-on: ubuntu-latest
     env:
-      DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKER_USER: ${{ vars.DOCKERHUB_USER }}
       TAG:  ${{ github.ref_name }}
     steps:
       - name: Checkout
