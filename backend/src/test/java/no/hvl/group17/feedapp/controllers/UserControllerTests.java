@@ -114,19 +114,6 @@ class UserControllerTests {
                 .andExpect(status().isUnauthorized());
     }
 
-    /*
-    @Test
-    @WithMockUser(roles = "USER")
-    void getUser_asSelf_returnsOwnData() throws Exception {
-        Jwt jwt = createJwtUser();
-        var user = userRepository.findAll().get(0);
-
-        mockMvc.perform(get("/api/users/"+user.getId()).with(jwt().jwt(jwt)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username", is("alice")));
-    }
-    */
-
     @Test
     @WithMockUser(roles = "USER")
     void getUser_asOtherUser_forbidden() throws Exception {
@@ -145,23 +132,6 @@ class UserControllerTests {
         mockMvc.perform(get("/api/users/"+user.getId()))
                 .andExpect(status().isUnauthorized());
     }
-
-    /*
-    @Test
-    @WithMockUser(roles = "USER")
-    void editUser_asSelf_returnsOwnData() throws Exception {
-        Jwt jwt = createJwtUser();
-        var user = userRepository.findAll().get(0);
-        user.setEmail("alice@centrum.cz");
-
-        mockMvc.perform(put("/api/users/"+user.getId()).with(jwt().jwt(jwt))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username", is("alice")))
-                .andExpect(jsonPath("$.email", is("alice@centrum.cz")));
-    }
-    */
 
     @Test
     @WithMockUser(roles = "USER")
@@ -201,19 +171,6 @@ class UserControllerTests {
                 .andExpect(jsonPath("$.username", is("bob")))
                 .andExpect(jsonPath("$.email", is("bob@centrum.cz")));
     }
-
-    /*
-    @Test
-    @WithMockUser(roles = "USER")
-    void deleteUser_asSelf_true() throws Exception {
-        Jwt jwt = createJwtUser();
-        var user = userRepository.findAll().get(0);
-
-        mockMvc.perform(delete("/api/users/"+user.getId()).with(jwt().jwt(jwt)))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$", is("true")));
-    }
-    */
 
     @Test
     @WithMockUser(roles = "USER")
