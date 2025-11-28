@@ -5,7 +5,7 @@ on:
     tags: [ "v*.*.*" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,20 +32,8 @@ jobs:
       - name: Run all JUnit tests
         run: ./gradlew clean test --info --stacktrace
 
-      - name: Build JAR
-        run: ./gradlew --no-daemon clean build -x test
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            build/libs/*.jar
-            backend/build/libs/*.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   docker:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     env:
       DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
