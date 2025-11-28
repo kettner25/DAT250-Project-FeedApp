@@ -5,6 +5,8 @@ import no.hvl.group17.feedapp.domain.Poll;
 import no.hvl.group17.feedapp.domain.User;
 import no.hvl.group17.feedapp.domain.Vote;
 import no.hvl.group17.feedapp.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,22 +26,30 @@ public class MeController {
     /// Authenticated USER
     @PreAuthorize("hasRole('USER')")
     @GetMapping("")
-    public User getMe(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getOrCreateFromJwt(jwt);
+    public ResponseEntity<User> getMe(@AuthenticationPrincipal Jwt jwt) {
+        var res = userService.getOrCreateFromJwt(jwt);
+        if (res == null) return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /// Authenticated USER
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/polls")
-    public List<Poll> getMyPolls(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getOrCreateFromJwt(jwt).getPolls();
+    public ResponseEntity<List<Poll>> getMyPolls(@AuthenticationPrincipal Jwt jwt) {
+        var res = userService.getOrCreateFromJwt(jwt).getPolls();
+
+        if (res.isEmpty()) return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /// Authenticated USER
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/votes")
-    public List<Vote> getMyVotes(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getOrCreateFromJwt(jwt).getVotes();
+    public ResponseEntity<List<Vote>> getMyVotes(@AuthenticationPrincipal Jwt jwt) {
+        var res = userService.getOrCreateFromJwt(jwt).getVotes();
+
+        if (res.isEmpty()) return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

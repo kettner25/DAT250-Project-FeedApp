@@ -39,7 +39,15 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/favicon.ico",
-                                "/assets/**"
+                                "/assets/**",
+                                "/swagger-ui/**", //Swagger REST API DOCS
+                                "/v3/api-docs/**" //Swagger REST API DOCS
+                        ).permitAll()
+                        .requestMatchers(       // Allow Docs
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/docs/**"
                         ).permitAll()
                         .requestMatchers(       // Allow Docs
                                 "/v3/api-docs/**",
